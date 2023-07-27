@@ -1,44 +1,66 @@
+// Import necessary modules and components
+import Image from "next/image";
 import React, { useState } from "react";
-import { Breadcrumb, Button } from "../Layout/Atom/atom";
+import { User } from "Lib/types";
+import { UserData } from "resources/resources";
+import { Breadcrumb, Button, Spinner } from "../Layout/Atom/atom";
 import Modal from "../Layout/Modal/Modal";
 import { Eye, Pencil, Trash } from "../Layout/SVG/svg";
 import Table from "../Layout/Table/table";
-import { data, headers } from "./data";
 
-const Product = () => {
+// Define the type of RowData
+type RowData = User;
+
+// Main User component
+const User = () => {
+  // State to handle modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Fetch user data using UserData hook
+  const userData = UserData();
+
+  // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
+  const alluserData = React.useMemo(() => userData?.data, [userData?.data]);
+
+  // Function to toggle the modal visibility
   const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
+    setIsModalVisible((prevIsModalVisible) => !prevIsModalVisible);
   };
 
-  const renderContent = (item: any) => {
+  // Function to render table content for each user
+  const renderContent = (item: User) => {
     return (
       <>
-        <td className="px-6 py-4">{item.productName}</td>
-        <td className="px-6 py-4">{item.color}</td>
-        <td className="px-6 py-4">{item.size}</td>
-        <td className="px-6 py-4">{item.category}</td>
-        <td className="px-6 py-4">${item.price}</td>
-        <td className="px-6 py-4">{item.stock}</td>
-        <td className="px-6 py-4">{item.rating}</td>
-        <td className="px-6 py-4">{item.discount}</td>
+        <td className="px-6 py-4">
+          <Image
+            style={{ height: "60px", width: "60px" }}
+            src="/images/user.png"
+            width={90}
+            height={90}
+            alt="user profile"
+          />
+        </td>
+        <td className="px-6 py-4">{item?.email}</td>
+        <td className="px-6 py-4">{item?.fullName}</td>
+        <td className="px-6 py-4">{item?.phone}</td>
+        <td className="px-6 py-4">{item?.roles}</td>
         <td className="px-6 py-4">
           <Button className="px-2 py-2 rounded-sm bg-green-500 text-white">
             <span className="flex">
-              {" "}
-              <Eye fg="white" className="mt-1 mr-1"></Eye> View
+              <Eye fg="white" className="mt-1 mr-1" />
+              View
             </span>
           </Button>
           <Button className="px-2 py-2 rounded-sm bg-yellow-500 text-white">
             <span className="flex">
-              {" "}
-              <Pencil fg="white" className="mt-1 mr-1"></Pencil> Edit
+              <Pencil fg="white" className="mt-1 mr-1" />
+              Edit
             </span>
           </Button>
           <Button className="px-2 py-2 rounded-sm bg-ui-red text-white">
             <span className="flex">
-              <Trash fg="white" className="mt-1 mr-1"></Trash> Delete
+              <Trash fg="white" className="mt-1 mr-1" />
+              Delete
             </span>
           </Button>
         </td>
@@ -46,46 +68,71 @@ const Product = () => {
     );
   };
 
-  return (
-    <section className="py-12 container mx-auto">
-      <div className="px-4 md:px-10 mx-auto">
-        <div className="mb-8">
-          <Breadcrumb title="Product" />
-        </div>
-        <div>
-          <div className="flex justify-end mb-4">
-            <Button onClick={toggleModal}>Create New Product</Button>
-          </div>
-          <div className="text-center">
-            <Table
-              headers={headers}
-              tableName="All Products"
-              data={data}
-              searchable // Enable search feature
-              itemsPerPage={7} // Set the number of items per page for pagination
-              renderContent={renderContent}
-            />
-          </div>
-          <Modal
-            buttonText="Toggle Modal"
-            title="Terms of Service"
-            isModalVisible={isModalVisible}
-            toggleModal={toggleModal}
-          >
-            <ProductModalDetails toggleModal={toggleModal} />
-          </Modal>
+  // Define table headers
+  const headers = ["profileImage", "Email", "Name", "Phone", "Role", "Action"];
+
+  // Determine the content of the window based on loading, error, or data availability
+  let windowContent = <></>;
+  if (userData.isLoading) {
+    windowContent = (
+      <div className="container">
+        <Spinner size={8} color="text-light-200" />
+      </div>
+    );
+  } else if (userData.error || !alluserData) {
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
         </div>
       </div>
-    </section>
-  );
+    );
+  } else {
+    windowContent = (
+      <section className="py-12 container mx-auto">
+        <div className="px-4 md:px-10 mx-auto">
+          <div className="mb-8">
+            <Breadcrumb title="User" className="font-bold" />
+          </div>
+          <div>
+            <div className="flex justify-end mb-4">
+              <Button onClick={toggleModal}>Create New Product</Button>
+            </div>
+            <div className="text-center">
+              <Table
+                headers={headers}
+                tableName="All Users"
+                data={alluserData}
+                searchable // Enable search feature
+                itemsPerPage={5} // Set the number of items per page for pagination
+                renderContent={renderContent}
+              />
+            </div>
+            <Modal
+              buttonText="Toggle Modal"
+              title="Terms of Service"
+              isModalVisible={isModalVisible}
+              toggleModal={toggleModal}
+            >
+              <UserModalDetails toggleModal={toggleModal} />
+            </Modal>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Render the final window content
+  return <>{windowContent}</>;
 };
 
-export default Product;
+export default User;
 
-type ProductModalDetailsProps = {
+// UserModalDetails component
+type UserModalDetailsProps = {
   toggleModal: () => void; // Define the type of toggleModal
 };
-const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
+const UserModalDetails = ({ toggleModal }: UserModalDetailsProps) => {
   return (
     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-auto">
       <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">

@@ -49,6 +49,7 @@ module.exports = {
     "red-400": "#f87171",
     "red-100": "#fee2e2",
     "red-200": "#fecaca",
+    "ui-red-600": "#dc2626",
     red: "500",
 
     "red-50": "#fef2f2",
@@ -57,5 +58,10 @@ module.exports = {
 
     "orange-100": "#ffedd5",
     "ui-orange-400": "#fb923c",
+
+    // yellow
+
+    "ui-yellow-400": "#facc15",
+    "ui-yellow-500": "#eab308",
   },
 };

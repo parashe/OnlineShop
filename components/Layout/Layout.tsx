@@ -7,15 +7,15 @@ import Sidebar from "./Sidebar/sidebar";
 const Layout: React.FC = ({ children }) => {
   return (
     <>
-      <div className="relative md:ml-64 bg-blueGray-100">
+      <div className="relative md:ml-64 bg-blueGray-50">
         <Navbar />
         <Sidebar />
 
         <div className="px-4 md:px-10 mx-auto w-full -m-24 mt-0">
           {children}
-          <div className="mt-10 pt-10 mb-0">
+          {/* <div className="mt-10 pt-10 mb-0">
             <Footer />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
