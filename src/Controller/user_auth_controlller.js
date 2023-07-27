@@ -6,6 +6,9 @@ const sendPasswordResetEmail = require("../utils/emailhelper");
 
 const JWT_SECRET =
   process.env.JWT_SECRET || "JFDKJFSDAJJKD2465132FDFDSA32F1FDSFDS123DF";
+const JWT_REFRESH_SECRET =
+  process.env.JWT_REFRESH_SECRET ||
+  "JFDKJFSDAJJKD2465132FDFDSA32F1FDSFDS123DFfdfdsfdsfds";
 
 exports.signup = async (req, res) => {
   try {
@@ -20,7 +23,7 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     const newUser = await User.create({
-      fullname: req.body.fullname,
+      fullName: req.body.fullName,
       email: req.body.email,
       password: hashedPassword,
       phone: req.body.phone,
@@ -53,19 +56,31 @@ exports.signin = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
+        refreshToken: null,
         message: "Invalid username or password!",
       });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, {
-      expiresIn: "24h", // Set token expiry to 24 hours
+    const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: "1h", // Set access token expiry to 1 hour
+    });
+
+    const refreshToken = jwt.sign({ id: user._id }, JWT_REFRESH_SECRET, {
+      expiresIn: "7d", // Set refresh token expiry to 7 days
     });
 
     const authorities = user.roles || ["user"]; // Set roles based on user.roles or default to ["user"]
 
     // Set HttpOnly and Secure flags for cookies
-    res.cookie("accessToken", token, {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1 * 60 * 60 * 1000, // 1 hour
+      httpOnly: true,
+      secure: true, // Set to true when using HTTPS
+      sameSite: "strict",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
       secure: true, // Set to true when using HTTPS
       sameSite: "strict",
@@ -73,16 +88,16 @@ exports.signin = async (req, res) => {
 
     res.status(200).send({
       id: user._id,
-      fullname: user.fullname,
+      fullName: user.fullName,
       email: user.email,
       roles: authorities,
-      accessToken: token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     });
   } catch (error) {
     res.status(500).send({ message: "Error signing in", error: error.message });
   }
 };
-
 // Call the function to connect to the database before using the route
 exports.changePassword = async (req, res) => {
   try {

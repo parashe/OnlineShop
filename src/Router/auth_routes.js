@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const verifySignUp = require("../Middleware/verifySignUp");
 const controller = require("../Controller/user_auth_controlller");
+const userDetails = require("../Controller/userDetails.controller");
 const user_controller = require("../Controller/user_controller");
 const {
   updateUser,
@@ -47,6 +48,8 @@ router.get(
   [authJwt.verifyToken, authJwt.isAdmin],
   user_controller.adminBoard
 );
+
+router.get("/api/alluser", userDetails.getAll_User);
 
 // Export the router
 module.exports = router;
