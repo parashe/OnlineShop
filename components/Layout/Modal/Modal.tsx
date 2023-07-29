@@ -1,10 +1,11 @@
 import React from "react";
 
 interface ModalProps {
-  buttonText: string;
-  title: string;
+  buttonText?: string;
+  title?: string;
   isModalVisible: boolean; // Accept isModalVisible as a prop
-  toggleModal: () => void; // Accept toggleModal as a prop
+  toggleModal?: () => void; // Accept toggleModal as a prop
+  onClose?: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({

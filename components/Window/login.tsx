@@ -64,6 +64,7 @@ const LoginPage: React.FC = () => {
     // If both email and password are provided, attempt login
     if (email && password) {
       setIsSaving(true);
+
       try {
         await delay(1000); // Simulating a delay for demonstration purposes
 

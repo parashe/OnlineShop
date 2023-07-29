@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Login, User } from "Lib/types";
+import { Login, User, userRole } from "Lib/types";
 import { Base_Url } from "../utils/config";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
@@ -49,4 +49,74 @@ export const UserData = (): UseQueryResult<User[] | null, unknown> => {
       throw new Error("Error fetching user data");
     }
   });
+};
+
+interface createUserProps {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: number;
+  roles: string[];
+}
+
+export const createUser = async (
+  email: string,
+  password: string,
+  fullName: string,
+  phone: number
+): Promise<User> => {
+  try {
+    const body: createUserProps = {
+      email,
+      password,
+      fullName,
+      phone,
+      roles: ["admin"],
+    };
+
+    const response: AxiosResponse<User> = await axios.post(
+      `${Base_Url}/auth/signup`,
+      body
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
+};
+interface UpdateUserProps {
+  formData: FormData;
+  _id: string;
+  succes: string;
+}
+
+export const updateUser = async (
+  formData: FormData,
+  _id: string
+): Promise<User> => {
+  try {
+    const response: AxiosResponse<User> = await axios.put(
+      `${Base_Url}/users/${_id}`, // Modify the endpoint to match your API endpoint for updating users
+      formData
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const deleteUser = async (_id: string): Promise<User> => {
+  try {
+    const response: AxiosResponse<User> = await axios.delete(
+      `${Base_Url}/users/${_id}` // Modify the endpoint to match your API endpoint for updating users
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
 };

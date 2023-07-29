@@ -12,14 +12,15 @@ export type Login={
 }
 export type User={
     _id:string;
-    roles: string[];
-    paymentMethods: string[];
-    wishlist: string[];
-    isNewsletterSubscribed: boolean;
-    name?: string;
-    email?: string;
-    fullName?: string;
-    phone?: string;
+    roles?: userRole;
+    paymentMethods?: string[];
+    wishlist?: string[];
+    isNewsletterSubscribed?: boolean;
+    email: string;
+    fullName: string;
+    phone: number;
     createdAt: string;
-
+    success?: boolean;
+    password: string;
+    message?: string;
 }

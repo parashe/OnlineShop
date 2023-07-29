@@ -87,7 +87,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ title, className }) => {
 
 interface InputProps {
   label: string;
-  value: string | number;
+  value?: string | number;
   placeholder: string;
   errorMessage?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
