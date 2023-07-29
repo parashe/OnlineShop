@@ -3,10 +3,7 @@ const verifySignUp = require("../Middleware/verifySignUp");
 const controller = require("../Controller/user_auth_controlller");
 const userDetails = require("../Controller/userDetails.controller");
 const user_controller = require("../Controller/user_controller");
-const {
-  updateUser,
-  uploadImage,
-} = require("../Controller/userDetails.controller");
+const { updateUser } = require("../Controller/userDetails.controller");
 const { multerUpload } = require("../Middleware/uploadImage");
 const authJwt = require("../Middleware/authJwt");
 
@@ -31,6 +28,7 @@ router.post("/api/auth/signin", controller.signin);
 router.put("/api/users/:id/changePassword", controller.changePassword);
 
 router.put("/api/users/:id", multerUpload("profileImage"), updateUser);
+router.delete("/api/users/:id", userDetails.delete_User);
 router.post("/api/request-password-reset", controller.requestPasswordReset);
 router.post("/api/reset-password/:token", controller.resetPassword);
 

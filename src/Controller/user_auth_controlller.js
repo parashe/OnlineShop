@@ -30,9 +30,12 @@ exports.signup = async (req, res) => {
       roles: req.body.roles || ["user"],
     });
 
-    res
-      .status(201)
-      .send({ User: newUser, message: "User registered successfully!" });
+    res.status(201).send({
+      User: newUser,
+      message: "User registered successfully!",
+      status: 201,
+      success: true,
+    });
   } catch (error) {
     res
       .status(500)
@@ -87,12 +90,14 @@ exports.signin = async (req, res) => {
     });
 
     res.status(200).send({
+      status: 200,
       id: user._id,
       fullName: user.fullName,
       email: user.email,
       roles: authorities,
       accessToken: accessToken,
       refreshToken: refreshToken,
+      success: true,
     });
   } catch (error) {
     res.status(500).send({ message: "Error signing in", error: error.message });
