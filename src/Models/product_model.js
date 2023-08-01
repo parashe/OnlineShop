@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema(
   {
-    name: {
+    productName: {
       type: String,
       required: [true, "Product name is required."],
       trim: true,
@@ -33,31 +33,11 @@ const ProductSchema = new mongoose.Schema(
     productImages: [
       {
         type: String,
-        required: [true, "Product images are required."],
       },
     ],
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
-    },
-    sku: {
-      type: String,
-
-      unique: true,
-    },
-    weight: {
-      type: Number,
-    },
-    dimensions: {
-      height: {
-        type: Number,
-      },
-      width: {
-        type: Number,
-      },
-      length: {
-        type: Number,
-      },
     },
 
     colors: [
@@ -74,9 +54,7 @@ const ProductSchema = new mongoose.Schema(
         ref: "Size",
       },
     ],
-    tags: {
-      type: [String],
-    },
+
     availability: {
       type: Boolean,
       default: true,
@@ -84,15 +62,8 @@ const ProductSchema = new mongoose.Schema(
     discountPrice: {
       type: Number,
     },
-    ratingsAndReviews: {
-      averageRating: {
-        type: Number,
-        default: 0,
-      },
-      totalReviews: {
-        type: Number,
-        default: 0,
-      },
+    rating: {
+      type: Number,
     },
     relatedProducts: [
       {

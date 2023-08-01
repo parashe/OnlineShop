@@ -7,6 +7,7 @@ const app = express();
 app.use(express.json());
 var bodyParser = require("body-parser");
 
+app.use(express.urlencoded({ extended: true }));
 app.use(
   bodyParser.json({
     limit: "20mb",
@@ -17,8 +18,18 @@ app.use(cors());
 
 // routers
 const authRoutes = require("./src/Router/auth_routes");
+const categoryroutes = require("./src/Router/category_routes");
+const sizeroutes = require("./src/Router/size_routes");
+const colorroutes = require("./src/Router/color_routes");
+const brandroutes = require("./src/Router/brand_routes");
+const productroutes = require("./src/Router/product_routes");
 
 app.use(authRoutes);
+app.use(categoryroutes);
+app.use(sizeroutes);
+app.use(colorroutes);
+app.use(brandroutes);
+app.use(productroutes);
 
 ///Routes
 const { connectDB } = require("./src/Database/conn");

@@ -58,4 +58,30 @@ const multerUpload = (fieldName) => (req, res, next) => {
   });
 };
 
-module.exports = { multerUpload };
+// Custom middleware function to handle file upload and validation for multiple images
+const multerUploadMultiple = (fieldName, maxCount) => (req, res, next) => {
+  const upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 1024 * 1024 * 5, // 5MB file size limit for each image
+    },
+    fileFilter: fileFilter,
+  }).array(fieldName, maxCount); // maxCount is the maximum number of files allowed for the field
+
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred during upload
+      return res
+        .status(400)
+        .json({ message: "File upload error.", error: err.message });
+    } else if (err) {
+      // An unknown error occurred during upload
+      return res
+        .status(400)
+        .json({ message: "File upload error.", error: err.message });
+    }
+
+    next();
+  });
+};
+module.exports = { multerUpload, multerUploadMultiple };
