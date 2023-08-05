@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Login, User, userRole } from "Lib/types";
+import { Categories, Login, User, userRole } from "Lib/types";
 import { Base_Url } from "../utils/config";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
@@ -117,6 +117,32 @@ export const deleteUser = async (_id: string): Promise<User> => {
     return response.data;
   } catch (error: any) {
     console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseCategory = () => {
+  try {
+    return useQuery<Categories>(["categories"], async () => {
+      const response: AxiosResponse<Categories> = await axios.get(
+        `${Base_Url}/categories`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseCategoryWithParentID = async () => {
+  try {
+    return useQuery<Categories>(["categories"], async () => {
+      const response: AxiosResponse<Categories> = await axios.get(
+        `${Base_Url}/categories-without-parentId`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 };

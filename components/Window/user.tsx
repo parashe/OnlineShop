@@ -23,6 +23,7 @@ const User = () => {
   const [modalData, setModalData] = useState<User | null>(null);
   const [deleteModal_Data, setdeleteModal_Data] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
+
   // Fetch user data using UserData hook
   const userData = UserData();
 
@@ -38,7 +39,7 @@ const User = () => {
     setModalData(item);
     setShowModal(true);
   };
-  console.log("modalData", modalData);
+
   const handlemodalClose = () => setShowModal(false);
 
   const deletemodalHandler = (item: User) => {

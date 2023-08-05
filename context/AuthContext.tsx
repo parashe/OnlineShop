@@ -30,7 +30,6 @@ const isExpiredToken = (token: string): boolean => {
     const currentTime = Date.now();
     return expirationTime < currentTime;
   } catch (error) {
-    console.error("Error decoding token:", error);
     return true;
   }
 };
@@ -40,7 +39,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(true); // Track loading state
 
-  console.log("authuserrole", userRole);
   useEffect(() => {
     const token = Cookies.get("accessToken");
     const userRoles = Cookies.get("userRole");
