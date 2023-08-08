@@ -146,3 +146,43 @@ export const UseCategoryWithParentID = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const createCategory = async (
+  formData: FormData
+): Promise<Categories> => {
+  try {
+    const response: AxiosResponse<Categories> = await axios.post(
+      `${Base_Url}/categories`,
+      formData
+    );
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateCategory = async (
+  categoryId: number,
+  formData: FormData
+) => {
+  try {
+    const response = await axios.put(
+      `${Base_Url}/categories/${categoryId}`,
+      formData
+    );
+    return response.data; // Return the updated category data
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+// Function to delete a category
+export const deleteCategory = async (categoryId: number) => {
+  try {
+    const response = await axios.delete(`${Base_Url}/categories/${categoryId}`);
+    return response.data; // Return the deleted category data
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};

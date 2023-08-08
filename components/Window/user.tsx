@@ -79,7 +79,7 @@ const User = () => {
             </span>
           </Button>
           <Button
-            className="px-2 py-2 rounded-sm bg-yellow-500 text-white"
+            className="px-2 py-2 rounded-sm bg-purple-500 text-white"
             onClick={() => handlemodalEditClick(item)}
           >
             <span className="flex">

@@ -14,7 +14,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
 }) => {
   const defaultClassName =
-    "bg-blue-600 hover:bg-blue-700 text-white focus:outline-none font-medium rounded-sm text-sm px-5 py-2.5 text-center transition-all duration-200";
+    "bg-blue-600  text-white focus:outline-none font-medium rounded-sm text-sm px-5 py-2.5 text-center transition-all duration-200";
 
   const finalClassName = className
     ? defaultClassName + " " + className
@@ -108,6 +108,7 @@ export const Input: React.FC<InputProps> = ({
   className,
   required,
 }) => {
+  console.log("value", value);
   const defaultClassName =
     "w-full px-4 py-3 rounded-sm shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500";
 
@@ -278,11 +279,13 @@ export const Spinner: React.FC<SpinnerProps> = ({
 
 interface DropdownHoverProps {
   buttonText: string;
-  menuItems: string[];
-  onSelectItem: (selectedItem: string) => void;
+  menuItems: { label: string; value: number }[];
+  onSelectItem: (selectedItem: { label: string; value: number }) => void;
   className?: string;
   label?: string;
   required?: boolean;
+  errorMessage?: string;
+  value?: string | number;
 }
 
 export const DropdownHover: React.FC<DropdownHoverProps> = ({
@@ -292,20 +295,24 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
   className,
   label,
   required,
+  value,
+  errorMessage,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(""); // Remove the extra space here
+  const [selectedItem, setSelectedItem] = useState<{
+    label: string;
+    value: number;
+  } | null>(null);
 
   const handleToggle = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
 
-  const handleItemClick = (item: string) => {
+  const handleItemClick = (item: { label: string; value: number }) => {
     setSelectedItem(item);
     setIsOpen(false);
     onSelectItem(item); // Call the callback function with the selected item
   };
-
   const defaultClassName =
     "text-gray-900 focus:ring-4 focus:outline-none border border-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 justify-center inline-flex items-center";
 
@@ -331,7 +338,7 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
         data-dropdown-trigger="hover"
         onClick={handleToggle}
       >
-        {selectedItem ? selectedItem : buttonText}
+        {selectedItem ? selectedItem.label : value ? value : buttonText}
         <svg
           className="w-2.5 h-2.5 ml-10"
           aria-hidden="true"
@@ -349,6 +356,9 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
           />
         </svg>
       </button>
+      {errorMessage && (
+        <p className="text-red-500 text-xs italic">{errorMessage}</p>
+      )}
 
       {isOpen && (
         <div
@@ -366,7 +376,7 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
                   className="block px-4 py-2 hover:bg-ui-blue hover:text-white dark:hover:bg-gray-600 dark:hover:text-white"
                   onClick={() => handleItemClick(item)}
                 >
-                  {item}
+                  {item.label}
                 </a>
               </li>
             ))}
@@ -380,9 +390,27 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
 interface InputFileProps {
   label: string;
   required?: boolean;
+  onSelectItem?: string;
+  value?: string;
+  errorMessage?: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const InputFile: React.FC<InputFileProps> = ({ label, required }) => {
+export const InputFile: React.FC<InputFileProps> = ({
+  label,
+  required,
+  errorMessage,
+  onSelectItem,
+  onChange,
+  value,
+}) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Call the onChange prop function and pass the event object to the parent component
+    onChange(event);
+  };
+
+  console.log("onSelectItem", onSelectItem);
+
   return (
     <>
       <div className="flex items-center justify-center w-full">
@@ -390,8 +418,12 @@ export const InputFile: React.FC<InputFileProps> = ({ label, required }) => {
           htmlFor="dropzone-file"
           className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
         >
-          {label}
-          {required ? <span className="text-red-500 text-xl">*</span> : null}
+          <span className="text-gray-700 font-semibold">
+            {label}
+            {required ? (
+              <span className="text-red-500 text-xl">&nbsp;*</span>
+            ) : null}
+          </span>
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
               className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
@@ -408,17 +440,31 @@ export const InputFile: React.FC<InputFileProps> = ({ label, required }) => {
                 d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
               />
             </svg>
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
+            <p className="mb-2 text-sm text-gray-700 dark:text-gray-400">
+              <span className="font-semibold ">Click to upload</span> &nbsp; or
+              drag and drop
+              {value ? (
+                <p className="text-xl text-center italic  text-ui-blue">
+                  {value}
+                </p>
+              ) : (
+                <p className="text-xl text-center italic  text-ui-blue">
+                  {onSelectItem}
+                </p>
+              )}
             </p>
           </div>
-          <input id="dropzone-file" type="file" className="hidden" />
+          <input
+            id="dropzone-file"
+            type="file"
+            className="hidden"
+            onChange={handleChange}
+          />
         </label>
       </div>
+      {errorMessage && (
+        <p className="text-red-500 text-xs italic">{errorMessage}</p>
+      )}
     </>
   );
 };
