@@ -104,16 +104,16 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
             <>
               <Button
                 onClick={() => handleEditModal(category)}
-                className="px-1 py-1 rounded-full bg-purple-500 text-white"
+                className="p-1  rounded-full bg-purple-500 text-white"
               >
                 <span className="flex">
-                  <Pencil fg="white" className="m-1" />
+                  <Pencil fg="white" className="m-1 p-0" />
                 </span>
               </Button>
               &nbsp;
               <Button
                 onClick={() => handledeleteModal(category)}
-                className="px-1 py-1 rounded-full bg-ui-red text-white"
+                className="p-1  rounded-full bg-ui-red text-white"
               >
                 <span className="flex">
                   <Trash fg="white" className="m-1" />
@@ -219,7 +219,7 @@ const CategoryModalDetails = ({
 
   const [selectedParentCategory, setSelectedParentCategory] = useState<{
     label: string;
-    value: number;
+    value: number | string;
   } | null>(null);
 
   const handleChangecategoryName = (value: string) => {
@@ -299,7 +299,7 @@ const CategoryModalDetails = ({
   };
 
   // Assuming `data` is an array of objects with `categoryName` and `categoryId` properties
-  const dropdownMenuItems: { label: string; value: number }[] = [];
+  const dropdownMenuItems: { label: string; value: number | string }[] = [];
 
   data.forEach((category) => {
     dropdownMenuItems.push({
@@ -308,7 +308,10 @@ const CategoryModalDetails = ({
     });
   });
 
-  const handleSelectItem = (selectedItem: { label: string; value: number }) => {
+  const handleSelectItem = (selectedItem: {
+    label: string;
+    value: number | string;
+  }) => {
     console.log("selected category name:", selectedItem.label);
     console.log("selected category ID:", selectedItem.value);
     setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.
@@ -450,15 +453,12 @@ const CategoryEditModalDetails = ({
   const [imageError, setImageError] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  console.log("dataedit", data.categoryName);
-  console.log("categoryName", categoryName);
   const [selectedParentCategory, setSelectedParentCategory] = useState<{
     label: string;
-    value: number;
+    value: number | string;
   } | null>(null);
 
   const handleChangecategoryName = (value: string) => {
-    console.log("value", value);
     setcategoryName(value);
     setcategoryName_ErrorMsg("");
   };
@@ -552,7 +552,6 @@ const CategoryEditModalDetails = ({
     }
   };
 
-  console.log("allcategorydata", CategorywithoutParentID);
   // Assuming `data` is an array of objects with `categoryName` and `categoryId` properties
   const dropdownMenuItems: { label: string; value: number }[] = [];
 
@@ -563,9 +562,10 @@ const CategoryEditModalDetails = ({
     });
   });
 
-  console.log("dropdownMenuItems", dropdownMenuItems);
-
-  const handleSelectItem = (selectedItem: { label: string; value: number }) => {
+  const handleSelectItem = (selectedItem: {
+    label: string;
+    value: number | string;
+  }) => {
     console.log("selected category name:", selectedItem.label);
     console.log("selected category ID:", selectedItem.value);
     setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.

@@ -11,4 +11,7 @@ module.exports = {
     locales: ["en-US"],
     defaultLocale: "en-US",
   },
+  images: {
+    domains: ["localhost"], // Add other domains if needed
+  },
 };

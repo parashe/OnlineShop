@@ -1,28 +1,85 @@
-import React, { useState } from "react";
-import { Breadcrumb, Button } from "../Layout/Atom/atom";
+import React, { useState, useEffect } from "react";
+import {
+  createProduct,
+  updateProduct,
+  UseBrand,
+  UseCategory,
+  UseCategoryWithParentID,
+  UseColor,
+  UseProduct,
+  UseSize,
+} from "resources/resources";
+import {
+  Alert,
+  Breadcrumb,
+  Button,
+  DropdownHover,
+  Input,
+  InputFile,
+  MultipleDropdownHover,
+  Spinner,
+  TextAreaInput,
+} from "../Layout/Atom/atom";
 import Modal from "../Layout/Modal/Modal";
 import { Eye, Pencil, Trash } from "../Layout/SVG/svg";
 import Table from "../Layout/Table/table";
-import { data, headers } from "./data";
+import Image from "next/image";
+import { Image_Url } from "utils/config";
+import { Brand, Categories, Color, Product, Size } from "Lib/types";
 
 const Product = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showmodal, setshowmodal] = useState(false);
+  const [modalData, setModalData] = useState<Product | null>(null);
+
+  const productData = UseProduct();
+
+  const { data } = UseCategory();
+
+  const allcategorydata = React.useMemo(
+    () => data?.categories,
+    [data?.categories]
+  );
+
+  // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
+  const allproductData = React.useMemo(
+    () => productData?.data,
+    [productData?.data]
+  );
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
+  const handleEditModal = (product: Product) => {
+    setModalData(product);
+    setshowmodal(true);
+  };
+
   const renderContent = (item: any) => {
     return (
       <>
+        <td className="px-6 py-4">
+          <Image
+            style={{ height: "100px", width: "100px" }}
+            className="pt-0"
+            src={Image_Url + item.productImages[0]}
+            width={200}
+            height={500}
+            alt="product image"
+          />
+        </td>
         <td className="px-6 py-4">{item.productName}</td>
-        <td className="px-6 py-4">{item.color}</td>
-        <td className="px-6 py-4">{item.size}</td>
-        <td className="px-6 py-4">{item.category}</td>
+
+        <td className="px-6 py-4">
+          {
+            allcategorydata?.find((category) => category._id === item.category)
+              ?.categoryName
+          }
+        </td>
         <td className="px-6 py-4">${item.price}</td>
-        <td className="px-6 py-4">{item.stock}</td>
-        <td className="px-6 py-4">{item.rating}</td>
-        <td className="px-6 py-4">{item.discount}</td>
+        <td className="px-6 py-4">{item.stockQuantity}</td>
+
         <td className="px-6 py-4">
           <Button className="px-2 py-2 rounded-sm bg-green-500 text-white">
             <span className="flex">
@@ -30,7 +87,10 @@ const Product = () => {
               <Eye fg="white" className="mt-1 mr-1"></Eye> View
             </span>
           </Button>
-          <Button className="px-2 py-2 rounded-sm bg-yellow-500 text-white">
+          <Button
+            className="px-2 py-2 rounded-sm bg-yellow-500 text-white"
+            onClick={() => handleEditModal(item)}
+          >
             <span className="flex">
               {" "}
               <Pencil fg="white" className="mt-1 mr-1"></Pencil> Edit
@@ -42,42 +102,88 @@ const Product = () => {
             </span>
           </Button>
         </td>
+        {modalData && (
+          <Modal isModalVisible={showmodal}>
+            <ProductEditModalDetails
+              onClose={() => setshowmodal(false)}
+              data={modalData}
+            />
+          </Modal>
+        )}
       </>
     );
   };
 
-  return (
-    <section className="py-12 container mx-auto">
-      <div className="px-4 md:px-10 mx-auto">
-        <div className="mb-8">
-          <Breadcrumb title="Product" />
-        </div>
-        <div>
-          <div className="flex justify-end mb-4">
-            <Button onClick={toggleModal}>Create New Product</Button>
-          </div>
-          <div className="text-center">
-            <Table
-              headers={headers}
-              tableName="All Products"
-              data={data}
-              searchable // Enable search feature
-              itemsPerPage={7} // Set the number of items per page for pagination
-              renderContent={renderContent}
-            />
-          </div>
-          <Modal
-            buttonText="Toggle Modal"
-            title="Terms of Service"
-            isModalVisible={isModalVisible}
-            toggleModal={toggleModal}
-          >
-            <ProductModalDetails toggleModal={toggleModal} />
-          </Modal>
+  // Define table headers
+  const headers = [
+    "Images",
+    "product Name",
+    "Category",
+    "Price",
+    "Stock",
+    "Action",
+  ];
+
+  // Determine the content of the window based on loading, error, or data availability
+  let windowContent = <></>;
+  if (productData.isLoading) {
+    // Show a spinner if data is still loading
+    windowContent = (
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
+        <Spinner size={8} color="text-light-200" />
+      </div>
+    );
+  } else if (productData.error || !allproductData) {
+    // Show an error message if there was a network error or if data is not available
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
         </div>
       </div>
-    </section>
-  );
+    );
+  } else {
+    // Show the user data table if data is available
+    windowContent = (
+      <section className="py-12 container mx-auto">
+        <div className="px-4 md:px-10 mx-auto">
+          <div className="mb-8">
+            {/* Breadcrumb component */}
+            <Breadcrumb title="Product" className="font-bold" />
+          </div>
+          <div>
+            <div className="flex justify-end mb-4">
+              {/* Button to trigger the user creation modal */}
+              <Button onClick={toggleModal}>Create New Product</Button>
+            </div>
+            <div className="text-center w-full">
+              <Table
+                headers={headers}
+                tableName="All Products"
+                data={allproductData.products}
+                searchable // Enable search feature
+                itemsPerPage={5} // Set the number of items per page for pagination
+                renderContent={renderContent}
+              />
+            </div>
+            {/* User creation modal */}
+
+            <Modal
+              buttonText="Toggle Modal"
+              title="Terms of Service"
+              isModalVisible={isModalVisible}
+              toggleModal={toggleModal}
+            >
+              <ProductModalDetails toggleModal={toggleModal} />
+            </Modal>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Render the final window content
+  return <>{windowContent}</>;
 };
 
 export default Product;
@@ -86,11 +192,336 @@ type ProductModalDetailsProps = {
   toggleModal: () => void; // Define the type of toggleModal
 };
 const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
+  const [productName, setproductName] = useState(" ");
+  const [description, setdescription] = useState(" ");
+  const [price, setprice] = useState(" ");
+  const [stockQuantity, setstockQuantity] = useState(" ");
+  const [availability] = useState(true);
+  const [discountedPrice, setdiscountedPrice] = useState(" ");
+  const [rating, setrating] = useState(0);
+
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [productName_ErrorMsg, setproductName_ErrorMsg] = useState("");
+  const [description_ErrorMsg, setdescription_ErrorMsg] = useState("");
+  const [price_ErrorMsg, setprice_ErrorMsg] = useState("");
+  const [stockQuantity_ErrorMsg, setstockQuantity_ErrorMsg] = useState("");
+  const [discountedPrice_ErrorMsg, setdiscountedPrice_ErrorMsg] = useState("");
+  const [rating_ErrorMsg, setrating_ErrorMsg] = useState("");
+  const [categoryName_ErrorMsg, setcategoryName_ErrorMsg] = useState("");
+
+  const [imageError, setImageError] = useState("");
+
+  const [selectedImage, setSelectedImage] = useState<File[]>([]);
+  const [selectedParentCategory, setSelectedParentCategory] = useState<{
+    label: string;
+    value: number | string;
+  } | null>(null);
+
+  const [selectedSize, setSelectedSize] = useState<
+    Array<{ label: string; value: number | string }>
+  >([]);
+
+  const [selectedColor, setSelectedColor] = useState<
+    Array<{ label: string; value: number | string }>
+  >([]);
+
+  const [selectedbrand, setselectedbrand] = useState<{
+    label: string;
+    value: number | string;
+  } | null>(null);
+
+  const categoryWithParentID = UseCategoryWithParentID();
+
+  const allcategoryWithParentID = React.useMemo(
+    () => categoryWithParentID?.data,
+    [categoryWithParentID?.data]
+  );
+
+  const brand = UseBrand();
+  const allbrand = React.useMemo(() => brand?.data, [brand?.data]);
+
+  const color = UseColor();
+
+  const allcolor = React.useMemo(() => color?.data, [color?.data]);
+
+  const sizes = UseSize();
+  const allsizes = React.useMemo(() => sizes?.data, [sizes?.data]);
+
+  if (
+    brand.isLoading ||
+    color.isLoading ||
+    sizes.isLoading ||
+    categoryWithParentID.isLoading
+  ) {
+    return <Spinner size={8} color="text-light-200" />;
+  }
+  if (brand.error || color.error || sizes.error || categoryWithParentID.error) {
+    return <Alert type={alertType} message={alertMessage} />;
+  }
+  if (!allcategoryWithParentID || !allbrand || !allsizes || !allcolor) {
+    return <Alert type={alertType} message={alertMessage} />;
+  }
+
+  //Now creating a dropdowndata
+
+  // Assuming `data` is an array of objects with `categoryName` and `categoryId` properties
+  const dropdownMenuItems: { label: string; value: string | number }[] = [];
+
+  allcategoryWithParentID?.categories?.forEach((category) => {
+    dropdownMenuItems.push({
+      label: category.categoryName,
+      value: category._id,
+    });
+  });
+
+  const dropdownMenuItemsBrands: { label: string; value: string }[] = [];
+
+  allbrand?.brands.forEach((brand) => {
+    dropdownMenuItemsBrands.push({
+      label: brand.brandName,
+      value: brand._id,
+    });
+  });
+
+  const dropdownMenuItemssizes: { label: string; value: string }[] = [];
+
+  allsizes?.sizes.forEach((size) => {
+    dropdownMenuItemssizes.push({
+      label: size.sizeName,
+      value: size._id,
+    });
+  });
+  const dropdownMenuItemscolor: { label: string; value: string }[] = [];
+
+  allcolor?.colors.forEach((color) => {
+    dropdownMenuItemscolor.push({
+      label: color.colorName,
+      value: color._id,
+    });
+  });
+
+  const handleSaveProduct = async () => {
+    // console.log(
+    //   selectedParentCategory,
+    //   selectedColor,
+    //   selectedSize,
+    //   selectedImage,
+    //   selectedbrand,
+    //   productName,
+    //   description,
+    //   price,
+    //   stockQuantity,
+    //   discountedPrice,
+    //   rating
+    // );
+
+    console.log("description", description);
+    console.log("slected coloer=", selectedColor);
+    console.log("selected  size", selectedSize);
+
+    if (
+      productName ||
+      selectedImage ||
+      selectedParentCategory ||
+      discountedPrice ||
+      stockQuantity ||
+      rating ||
+      price ||
+      description
+    ) {
+      if (!productName.trim()) {
+        setproductName_ErrorMsg("Please enter category name");
+      }
+
+      if (selectedImage?.length === 0) {
+        setImageError("Please select the image");
+      }
+
+      if (!selectedParentCategory) {
+        setcategoryName_ErrorMsg("Please select the category");
+      }
+
+      if (!discountedPrice.trim()) {
+        setdiscountedPrice_ErrorMsg("Please enter the discounted price");
+      }
+
+      if (!stockQuantity.trim()) {
+        setstockQuantity_ErrorMsg("Please enter the stock quantity");
+      }
+
+      if (!rating) {
+        setrating_ErrorMsg("Please enter the rating");
+      }
+      if (rating > 5 || rating < 1) {
+        setrating_ErrorMsg("Please enter the rating between 1 and 5");
+      }
+      if (!price.trim()) {
+        setprice_ErrorMsg("Please enter the price");
+      }
+      if (!description.trim()) {
+        setdescription_ErrorMsg("Please enter the description");
+      }
+
+      if (
+        productName &&
+        price &&
+        rating &&
+        description &&
+        rating &&
+        stockQuantity &&
+        discountedPrice &&
+        selectedParentCategory
+      ) {
+        try {
+          setIsSaving(true);
+
+          // Check if selectedParentCategory is not null and then use the `value` property (category ID) as a string.
+          const parentCategoryId = selectedParentCategory
+            ? selectedParentCategory.value.toString()
+            : "";
+
+          const formData = new FormData();
+
+          selectedColor.forEach((color, index) => {
+            formData.append("colors", color.value.toString());
+          });
+
+          selectedSize.forEach((size, index) => {
+            formData.append("sizes", size.value.toString());
+          });
+
+          // Append selected brand to FormData
+          if (selectedbrand) {
+            formData.append("brand", selectedbrand.value.toString());
+          }
+          formData.append("category", parentCategoryId);
+          formData.append("price", price);
+          formData.append("stockQuantity", stockQuantity);
+          formData.append("discountedPrice", discountedPrice);
+          formData.append("rating", rating.toString());
+          formData.append("description", description);
+          formData.append("productName", productName);
+
+          selectedImage.forEach((image, index) => {
+            formData.append("productImages", image);
+          });
+
+          const res = await createProduct(formData);
+
+          // Simulate an asynchronous operation (e.g., API call) with setTimeout
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          if (res) {
+            setIsSaving(false);
+            setIsAlertVisible(true);
+            setAlertType("success");
+            setAlertMessage(" Product added successfully!");
+          }
+        } catch (error: any) {
+          setIsSaving(false);
+          setAlertType("error");
+          if (error) {
+            setAlertMessage(error.message);
+          }
+          setIsAlertVisible(true);
+        }
+      }
+    } else {
+      setAlertType("error");
+      setAlertMessage("Please fill all the fields.");
+      setIsAlertVisible(true);
+    }
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    setAlertType("");
+    setAlertMessage("");
+  };
+
+  //handling the change
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageError("");
+    const files = e.target.files;
+
+    if (files) {
+      const fileList: File[] = [];
+      for (let i = 0; i < files.length; i++) {
+        fileList.push(files[i]);
+      }
+
+      setSelectedImage(fileList);
+    }
+  };
+  const handleTextAreaChange = (value: string) => {
+    setdescription_ErrorMsg("");
+    console.log(value);
+    setdescription(value);
+    // Handle the textarea change here
+  };
+
+  const handleproductChange = (value: string) => {
+    setproductName_ErrorMsg("");
+    setproductName(value);
+    setcategoryName_ErrorMsg("");
+  };
+
+  const handlePriceChange = (value: string) => {
+    setprice_ErrorMsg(" ");
+    setprice(value);
+  };
+
+  const handleStockChange = (value: string) => {
+    setstockQuantity_ErrorMsg("");
+    setstockQuantity(value);
+  };
+
+  const handleRatingChange = (value: string) => {
+    setrating_ErrorMsg(" ");
+    const newValue = parseFloat(value);
+    setrating(newValue);
+  };
+  const handleDiscountedPriceChange = (value: string) => {
+    setdiscountedPrice_ErrorMsg("");
+    setdiscountedPrice(value);
+  };
+  const handleSelectSize = (
+    selectedItems: Array<{ label: string; value: number | string }>
+  ) => {
+    console.log("select size ", selectedItems);
+    setSelectedSize(selectedItems);
+  };
+
+  const handleSelectColor = (
+    selectedItems: Array<{ label: string; value: number | string }>
+  ) => {
+    console.log("color", selectedItems);
+    setSelectedColor(selectedItems);
+  };
+
+  const hanldeSelectedBrand = (selectedbrand: {
+    label: string;
+    value: number | string;
+  }) => {
+    setselectedbrand(selectedbrand);
+  };
+
+  const handleSelectItem = (selectedItem: {
+    label: string;
+    value: number | string;
+  }) => {
+    setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.
+    // Now you have access to both the selected category name and ID, and you can use them as required.
+  };
+
   return (
-    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-auto">
-      <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Terms of Service
+    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:w-[1300px] w-full h-full overflow-y-auto ">
+      <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600">
+        <h3 className="px-10 text-xl font-semibold text-gray-900 dark:text-white">
+          Create New Category
         </h3>
         <button
           type="button"
@@ -116,33 +547,775 @@ const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
         </button>
       </div>
 
-      <div className="p-6 space-y-6">
-        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-          With less than a month to go before the European Union enacts new
-          consumer privacy laws...
-        </p>
-        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-          The European Union’s General Data Protection Regulation (G.D.P.R.)
-          goes into effect on May 25...
-        </p>
-      </div>
+      <div className="container mx-auto p-12 pt-8 w-full pb-10 bg-gray-100">
+        <div className="md:max-w-[1300px] p-6 bg-white pb-10">
+          <form
+            className="space-y-4 md:space-y-6"
+            action="#"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <div className=" flex gap-6">
+              {/* Input Field */}
 
-      <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-        <button
-          onClick={toggleModal}
-          type="button"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          I accept
-        </button>
-        <button
-          onClick={toggleModal}
-          type="button"
-          className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-        >
-          Decline
-        </button>
+              <div className="w-full md:w-full">
+                <Input
+                  value={productName}
+                  onChange={(e) => handleproductChange(e.target.value)}
+                  autoComplete="off"
+                  type="text"
+                  label="Product Name"
+                  placeholder=" Product Name"
+                  errorMessage={productName_ErrorMsg}
+                  required={true}
+                />
+              </div>
+              <div className="w-full md:w-full">
+                <Input
+                  value={price}
+                  onChange={(e) => handlePriceChange(e.target.value)}
+                  autoComplete="off"
+                  type="number"
+                  label="Price"
+                  placeholder="Enter Price"
+                  errorMessage={price_ErrorMsg}
+                  required={true}
+                />
+              </div>
+              <div className="w-full md:w-full">
+                <Input
+                  value={discountedPrice}
+                  onChange={(e) => handleDiscountedPriceChange(e.target.value)}
+                  autoComplete="off"
+                  type="number"
+                  label="Discount Price"
+                  placeholder="Discount Price"
+                  errorMessage={discountedPrice_ErrorMsg}
+                  required={true}
+                />
+              </div>
+
+              <div className="w-full md:w-full">
+                <Input
+                  value={stockQuantity}
+                  onChange={(e) => handleStockChange(e.target.value)}
+                  autoComplete="off"
+                  type="number"
+                  label="Stock Available"
+                  placeholder="Stock Available"
+                  errorMessage={stockQuantity_ErrorMsg}
+                  required={true}
+                />
+              </div>
+
+              <div className="w-full md:w-full">
+                <Input
+                  value={rating}
+                  onChange={(e) => handleRatingChange(e.target.value)}
+                  autoComplete="off"
+                  type="number"
+                  label="Rating"
+                  placeholder="Rating"
+                  errorMessage={rating_ErrorMsg}
+                  required={true}
+                />
+              </div>
+            </div>
+
+            <div className=" flex gap-6">
+              {/* Input Field */}
+
+              <div className="w-full md:w-full">
+                <DropdownHover
+                  value={selectedParentCategory?.label}
+                  buttonText="Category"
+                  menuItems={dropdownMenuItems}
+                  onSelectItem={handleSelectItem}
+                  label="Category"
+                  className="w-full py-3.5 "
+                  required={true}
+                  errorMessage={categoryName_ErrorMsg}
+                />
+              </div>
+              <div className="w-full md:w-full">
+                <DropdownHover
+                  value={selectedbrand?.label}
+                  buttonText="Brand"
+                  menuItems={dropdownMenuItemsBrands}
+                  onSelectItem={hanldeSelectedBrand}
+                  label="Select Brand"
+                  className="w-full py-3.5 "
+                  required={false}
+                />
+              </div>
+              <div className="w-full md:w-full">
+                <MultipleDropdownHover
+                  value={selectedSize.map((item) => item.label)}
+                  buttonText="Select Size"
+                  menuItems={dropdownMenuItemssizes}
+                  onSelectItems={handleSelectSize}
+                  label="Select Size"
+                  className="w-full py-3.5 "
+                  required={false}
+                />
+              </div>
+              <div className="w-full md:w-full">
+                <MultipleDropdownHover
+                  value={selectedColor?.map((item) => item.label)}
+                  buttonText="Select Color"
+                  menuItems={dropdownMenuItemscolor}
+                  onSelectItems={handleSelectColor}
+                  label=" Select Color"
+                  className="w-full py-3.5 text-center "
+                  required={false}
+                />
+              </div>
+            </div>
+            <div className=" ">
+              <TextAreaInput
+                value={description}
+                className="w-full"
+                onChange={(e) => handleTextAreaChange(e.target.value)}
+                autoComplete="off"
+                type="text"
+                label="Description"
+                placeholder="Description"
+                required={true}
+                errorMessage={description_ErrorMsg}
+              />
+            </div>
+
+            {/* Input File */}
+            <div className="w-full ">
+              <InputFile
+                label="Product Image"
+                required={true}
+                placeholder="First selected image will display in the website"
+                errorMessage={imageError}
+                onChange={handleImageChange}
+                onSelectItem={selectedImage?.map((image) => {
+                  return image.name;
+                })}
+              />
+            </div>
+
+            <div className="flex justify-end mt-5 pt-5">
+              {/* Button for form submission */}
+              <Button
+                onClick={() => {
+                  handleSaveProduct();
+                }}
+                className="px-12 py-3 rounded-sm bg-ui-blue text-white text-md space-x-0"
+              >
+                {isSaving ? (
+                  <div className="flex justify-center">
+                    {/* Show a spinner during saving process */}
+                    <Spinner color="text-gray" size={6} />
+                  </div>
+                ) : (
+                  <span className="text-sm font-semibold tracking-wide text-white">
+                    Submit
+                  </span>
+                )}
+              </Button>
+            </div>
+            <div className="mt-8">
+              {/* Show an alert message if necessary */}
+              {isAlertVisible && (
+                <Alert
+                  type={alertType}
+                  message={alertMessage}
+                  onClose={handleAlertClose}
+                />
+              )}
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
+};
+
+type ProducEditProps = {
+  onClose: () => void; // Define the type of toggleModal
+  data: Product;
+};
+const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
+  const [productName, setproductName] = useState(data.productName);
+  const [description, setdescription] = useState(data.description);
+  const [price, setprice] = useState(data.price);
+  const [stockQuantity, setstockQuantity] = useState(data.stockQuantity);
+  const [availability] = useState(true);
+  const [discountedPrice, setdiscountedPrice] = useState(data.discountPrice);
+  const [rating, setrating] = useState(data.rating);
+
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [productName_ErrorMsg, setproductName_ErrorMsg] = useState("");
+  const [description_ErrorMsg, setdescription_ErrorMsg] = useState("");
+  const [price_ErrorMsg, setprice_ErrorMsg] = useState("");
+  const [stockQuantity_ErrorMsg, setstockQuantity_ErrorMsg] = useState("");
+  const [discountedPrice_ErrorMsg, setdiscountedPrice_ErrorMsg] = useState("");
+  const [rating_ErrorMsg, setrating_ErrorMsg] = useState("");
+  const [categoryName_ErrorMsg, setcategoryName_ErrorMsg] = useState("");
+
+  const [imageError, setImageError] = useState("");
+
+  const [selectedImage, setSelectedImage] = useState<File[]>([]);
+  const [selectedParentCategory, setSelectedParentCategory] = useState<{
+    label: string;
+    value: number | string;
+  } | null>(null);
+
+  const [selectedSize, setSelectedSize] = useState<
+    Array<{ label: string; value: number | string }>
+  >([]);
+
+  const [selectedColor, setSelectedColor] = useState<
+    Array<{ label: string; value: number | string }>
+  >([]);
+
+  const [selectedbrand, setselectedbrand] = useState<{
+    label: string;
+    value: number | string;
+  } | null>(null);
+
+  const categoryWithParentID = UseCategoryWithParentID();
+
+  const allcategoryWithParentID = React.useMemo(
+    () => categoryWithParentID?.data,
+    [categoryWithParentID?.data]
+  );
+
+  const brand = UseBrand();
+  const allbrand = React.useMemo(() => brand?.data, [brand?.data]);
+
+  const color = UseColor();
+
+  const allcolor = React.useMemo(() => color?.data, [color?.data]);
+
+  const sizes = UseSize();
+  const allsizes = React.useMemo(() => sizes?.data, [sizes?.data]);
+
+  //Now creating a dropdowndata
+
+  // Assuming `data` is an array of objects with `categoryName` and `categoryId` properties
+  const dropdownMenuItems: { label: string; value: string | number }[] = [];
+
+  allcategoryWithParentID?.categories?.forEach((category) => {
+    dropdownMenuItems.push({
+      label: category.categoryName,
+      value: category._id,
+    });
+  });
+
+  const dropdownMenuItemsBrands: { label: string; value: string }[] = [];
+
+  allbrand?.brands.forEach((brand) => {
+    dropdownMenuItemsBrands.push({
+      label: brand.brandName,
+      value: brand._id,
+    });
+  });
+
+  const dropdownMenuItemssizes: { label: string; value: string }[] = [];
+
+  allsizes?.sizes.forEach((size) => {
+    dropdownMenuItemssizes.push({
+      label: size.sizeName,
+      value: size._id,
+    });
+  });
+  const dropdownMenuItemscolor: { label: string; value: string }[] = [];
+
+  allcolor?.colors.forEach((color) => {
+    dropdownMenuItemscolor.push({
+      label: color.colorName,
+      value: color._id,
+    });
+  });
+
+  console.log("item", data);
+
+  const handleSaveProduct = async () => {
+    if (
+      productName ||
+      selectedImage ||
+      selectedParentCategory ||
+      discountedPrice ||
+      stockQuantity ||
+      rating ||
+      price ||
+      description
+    ) {
+      if (!productName.trim()) {
+        setproductName_ErrorMsg("Please enter category name");
+      }
+
+      if (!selectedParentCategory) {
+        setcategoryName_ErrorMsg("Please select the category");
+      }
+
+      if (!discountedPrice) {
+        setdiscountedPrice_ErrorMsg("Please enter the discounted price");
+      }
+
+      if (!stockQuantity) {
+        setstockQuantity_ErrorMsg("Please enter the stock quantity");
+      }
+
+      if (!rating) {
+        setrating_ErrorMsg("Please enter the rating");
+      }
+      if (rating > 5 || rating < 1) {
+        setrating_ErrorMsg("Please enter the rating between 1 and 5");
+      }
+      if (!price) {
+        setprice_ErrorMsg("Please enter the price");
+      }
+      if (!description.trim()) {
+        setdescription_ErrorMsg("Please enter the description");
+      }
+
+      if (
+        productName &&
+        price &&
+        rating &&
+        description &&
+        rating &&
+        stockQuantity &&
+        discountedPrice &&
+        selectedParentCategory
+      ) {
+        try {
+          setIsSaving(true);
+
+          // Check if selectedParentCategory is not null and then use the `value` property (category ID) as a string.
+          const parentCategoryId = selectedParentCategory
+            ? selectedParentCategory.value.toString()
+            : "";
+
+          const formData = new FormData();
+
+          if (selectedColor.length > 0) {
+            selectedColor.forEach((color, index) => {
+              formData.append("colors", color.value.toString());
+            });
+          }
+
+          if (selectedSize.length > 0) {
+            selectedSize.forEach((size, index) => {
+              formData.append("sizes", size.value.toString());
+            });
+          }
+
+          // Append selected brand to FormData
+          if (selectedbrand) {
+            formData.append("brand", selectedbrand.value.toString());
+          }
+          formData.append("category", parentCategoryId);
+          formData.append("price", price.toString());
+          formData.append("stockQuantity", stockQuantity.toString());
+          formData.append("discountPrice", discountedPrice.toString());
+          formData.append("rating", rating.toString());
+          formData.append("description", description);
+          formData.append("productName", productName);
+
+          if (selectedImage.length > 0) {
+            selectedImage.forEach((image, index) => {
+              formData.append("productImages", image);
+            });
+          }
+
+          const res = await updateProduct(data && data._id, formData);
+
+          // Simulate an asynchronous operation (e.g., API call) with setTimeout
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          if (res) {
+            setIsSaving(false);
+            setIsAlertVisible(true);
+            setAlertType("success");
+            setAlertMessage(" Product added successfully!");
+          }
+        } catch (error: any) {
+          setIsSaving(false);
+          setAlertType("error");
+          if (error) {
+            setAlertMessage(error.message);
+          }
+          setIsAlertVisible(true);
+        }
+      }
+    } else {
+      setAlertType("error");
+      setAlertMessage("Please fill all the fields.");
+      setIsAlertVisible(true);
+    }
+  };
+
+  useEffect(() => {
+    if (data.category) {
+      const parentCategory = allcategoryWithParentID?.categories.find(
+        (category: Categories) => category._id.toString() === data.category
+      );
+
+      if (parentCategory) {
+        setSelectedParentCategory({
+          label: parentCategory.categoryName,
+          value: parentCategory._id,
+        });
+      }
+    }
+
+    if (data.brand) {
+      const brandItem = allbrand?.brands.find(
+        (brand: Brand) => brand._id.toString() === data.brand
+      );
+
+      if (brandItem) {
+        setselectedbrand({
+          label: brandItem.brandName,
+          value: brandItem._id,
+        });
+      }
+    }
+  }, [data.category, data.brand, allcategoryWithParentID, allbrand]);
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    setAlertType("");
+    setAlertMessage("");
+  };
+
+  //handling the change
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageError("");
+    const files = e.target.files;
+
+    if (files) {
+      const fileList: File[] = [];
+      for (let i = 0; i < files.length; i++) {
+        fileList.push(files[i]);
+      }
+
+      setSelectedImage(fileList);
+    }
+  };
+  const handleTextAreaChange = (value: string) => {
+    setdescription_ErrorMsg("");
+    console.log(value);
+    setdescription(value);
+    // Handle the textarea change here
+  };
+
+  const handleproductChange = (value: string) => {
+    setproductName_ErrorMsg("");
+    setproductName(value);
+    setcategoryName_ErrorMsg("");
+  };
+
+  const handlePriceChange = (value: string) => {
+    setprice_ErrorMsg(" ");
+    setprice(value);
+  };
+
+  const handleStockChange = (value: string) => {
+    setstockQuantity_ErrorMsg("");
+    setstockQuantity(value);
+  };
+
+  const handleRatingChange = (value: string) => {
+    setrating_ErrorMsg(" ");
+    const newValue = parseFloat(value);
+    setrating(newValue);
+  };
+  const handleDiscountedPriceChange = (value: string) => {
+    setdiscountedPrice_ErrorMsg("");
+    setdiscountedPrice(value);
+  };
+  const handleSelectSize = (
+    selectedItems: Array<{ label: string; value: number | string }>
+  ) => {
+    console.log("select size ", selectedItems);
+    setSelectedSize(selectedItems);
+  };
+
+  const handleSelectColor = (
+    selectedItems: Array<{ label: string; value: number | string }>
+  ) => {
+    console.log("color", selectedItems);
+    setSelectedColor(selectedItems);
+  };
+
+  const hanldeSelectedBrand = (selectedbrand: {
+    label: string;
+    value: number | string;
+  }) => {
+    setselectedbrand(selectedbrand);
+  };
+
+  const handleSelectItem = (selectedItem: {
+    label: string;
+    value: number | string;
+  }) => {
+    setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.
+    // Now you have access to both the selected category name and ID, and you can use them as required.
+  };
+
+  let windowContent = <></>;
+  if (
+    brand.isLoading ||
+    color.isLoading ||
+    sizes.isLoading ||
+    categoryWithParentID.isLoading
+  ) {
+    windowContent = (
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
+        <Spinner size={8} color="text-light-200" />
+      </div>
+    );
+  } else if (
+    brand.error ||
+    color.error ||
+    sizes.error ||
+    categoryWithParentID.error
+  ) {
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
+        </div>
+      </div>
+    );
+  } else if (!allcategoryWithParentID || !allbrand || !allsizes || !allcolor) {
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
+        </div>
+      </div>
+    );
+  } else {
+    windowContent = (
+      <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:w-[1300px] w-full h-full overflow-y-auto ">
+        <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600">
+          <h3 className="px-10 text-xl font-semibold text-gray-900 dark:text-white">
+            Create New Category
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <svg
+              className="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+            <span className="sr-only">Close modal</span>
+          </button>
+        </div>
+
+        <div className="container mx-auto p-12 pt-8 w-full pb-10 bg-gray-100">
+          <div className="md:max-w-[1300px] p-6 bg-white pb-10">
+            <form
+              className="space-y-4 md:space-y-6"
+              action="#"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <div className=" flex gap-6">
+                {/* Input Field */}
+
+                <div className="w-full md:w-full">
+                  <Input
+                    value={productName}
+                    onChange={(e) => handleproductChange(e.target.value)}
+                    autoComplete="off"
+                    type="text"
+                    label="Product Name"
+                    placeholder=" Product Name"
+                    errorMessage={productName_ErrorMsg}
+                    required={true}
+                  />
+                </div>
+                <div className="w-full md:w-full">
+                  <Input
+                    value={price}
+                    onChange={(e) => handlePriceChange(e.target.value)}
+                    autoComplete="off"
+                    type="number"
+                    label="Price"
+                    placeholder="Enter Price"
+                    errorMessage={price_ErrorMsg}
+                    required={true}
+                  />
+                </div>
+                <div className="w-full md:w-full">
+                  <Input
+                    value={discountedPrice}
+                    onChange={(e) =>
+                      handleDiscountedPriceChange(e.target.value)
+                    }
+                    autoComplete="off"
+                    type="number"
+                    label="Discount Price"
+                    placeholder="Discount Price"
+                    errorMessage={discountedPrice_ErrorMsg}
+                    required={true}
+                  />
+                </div>
+
+                <div className="w-full md:w-full">
+                  <Input
+                    value={stockQuantity}
+                    onChange={(e) => handleStockChange(e.target.value)}
+                    autoComplete="off"
+                    type="number"
+                    label="Stock Available"
+                    placeholder="Stock Available"
+                    errorMessage={stockQuantity_ErrorMsg}
+                    required={true}
+                  />
+                </div>
+
+                <div className="w-full md:w-full">
+                  <Input
+                    value={rating}
+                    onChange={(e) => handleRatingChange(e.target.value)}
+                    autoComplete="off"
+                    type="number"
+                    label="Rating"
+                    placeholder="Rating"
+                    errorMessage={rating_ErrorMsg}
+                    required={true}
+                  />
+                </div>
+              </div>
+
+              <div className=" flex gap-6">
+                {/* Input Field */}
+
+                <div className="w-full md:w-full">
+                  <DropdownHover
+                    value={selectedParentCategory?.label}
+                    buttonText="Category"
+                    menuItems={dropdownMenuItems}
+                    onSelectItem={handleSelectItem}
+                    label="Category"
+                    className="w-full py-3.5 "
+                    required={true}
+                    errorMessage={categoryName_ErrorMsg}
+                  />
+                </div>
+                <div className="w-full md:w-full">
+                  <DropdownHover
+                    value={selectedbrand?.label}
+                    buttonText="Brand"
+                    menuItems={dropdownMenuItemsBrands}
+                    onSelectItem={hanldeSelectedBrand}
+                    label="Select Brand"
+                    className="w-full py-3.5 "
+                    required={false}
+                  />
+                </div>
+                <div className="w-full md:w-full">
+                  <MultipleDropdownHover
+                    value={selectedSize.map((item) => item.label)}
+                    buttonText="Select Size"
+                    menuItems={dropdownMenuItemssizes}
+                    onSelectItems={handleSelectSize}
+                    label="Select Size"
+                    className="w-full py-3.5 "
+                    required={false}
+                  />
+                </div>
+                <div className="w-full md:w-full">
+                  <MultipleDropdownHover
+                    value={selectedColor?.map((item) => item.label)}
+                    buttonText="Select Color"
+                    menuItems={dropdownMenuItemscolor}
+                    onSelectItems={handleSelectColor}
+                    label=" Select Color"
+                    className="w-full py-3.5 text-center "
+                    required={false}
+                  />
+                </div>
+              </div>
+              <div className=" ">
+                <TextAreaInput
+                  value={description}
+                  className="w-full"
+                  onChange={(e) => handleTextAreaChange(e.target.value)}
+                  autoComplete="off"
+                  type="text"
+                  label="Description"
+                  placeholder="Description"
+                  required={true}
+                  errorMessage={description_ErrorMsg}
+                />
+              </div>
+
+              {/* Input File */}
+              <div className="w-full ">
+                <InputFile
+                  label="Product Image"
+                  required={true}
+                  placeholder="First selected image will display in the website"
+                  errorMessage={imageError}
+                  onChange={handleImageChange}
+                  onSelectItem={selectedImage?.map((image) => {
+                    return image.name;
+                  })}
+                />
+              </div>
+
+              <div className="flex justify-end mt-5 pt-5">
+                {/* Button for form submission */}
+                <Button
+                  onClick={() => {
+                    handleSaveProduct();
+                  }}
+                  className="px-12 py-3 rounded-sm bg-ui-blue text-white text-md space-x-0"
+                >
+                  {isSaving ? (
+                    <div className="flex justify-center">
+                      {/* Show a spinner during saving process */}
+                      <Spinner color="text-gray" size={6} />
+                    </div>
+                  ) : (
+                    <span className="text-sm font-semibold tracking-wide text-white">
+                      Update
+                    </span>
+                  )}
+                </Button>
+              </div>
+              <div className="mt-8">
+                {/* Show an alert message if necessary */}
+                {isAlertVisible && (
+                  <Alert
+                    type={alertType}
+                    message={alertMessage}
+                    onClose={handleAlertClose}
+                  />
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return <>{windowContent}</>;
 };

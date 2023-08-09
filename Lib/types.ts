@@ -35,3 +35,41 @@ export type Categories = {
     parentCategory: string;
     parentId?: string; // Change the type to string if it's of type string in your data
   };
+
+  export type Color={
+    _id:string;
+    colorName:string;
+    colors:Color[];
+  }
+
+  export type Size={
+    _id:string;
+    sizeName:string;
+    sizes:Size[]
+  }
+
+  export type Brand={
+    _id:string;
+    brandName:string;
+    brands:Brand[];
+  }
+
+  export type Product={
+    _id:string;
+    productName:string;
+    productImages:[];
+    brand:string;
+    category:string;
+    stockQuantity:string;
+    sizes:Size;
+    colors:Color;
+    products:Product[];
+    rating:number;
+    description:string;
+    price:string;
+    discountPrice:string;
+
+
+
+  
+  }

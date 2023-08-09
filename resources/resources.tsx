@@ -1,5 +1,14 @@
 import axios, { AxiosResponse } from "axios";
-import { Categories, Login, User, userRole } from "Lib/types";
+import {
+  Brand,
+  Categories,
+  Color,
+  Login,
+  Product,
+  Size,
+  User,
+  userRole,
+} from "Lib/types";
 import { Base_Url } from "../utils/config";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
@@ -121,7 +130,7 @@ export const deleteUser = async (_id: string): Promise<User> => {
   }
 };
 
-export const UseCategory = () => {
+export const UseCategory = (id?: string) => {
   try {
     return useQuery<Categories>(["categories"], async () => {
       const response: AxiosResponse<Categories> = await axios.get(
@@ -134,11 +143,11 @@ export const UseCategory = () => {
   }
 };
 
-export const UseCategoryWithParentID = async () => {
+export const UseCategoryWithParentID = () => {
   try {
-    return useQuery<Categories>(["categories"], async () => {
+    return useQuery<Categories>(["categorieswithID"], async () => {
       const response: AxiosResponse<Categories> = await axios.get(
-        `${Base_Url}/categories-without-parentId`
+        `${Base_Url}/categories-with-parentId`
       );
       return response.data; // Return the data directly
     });
@@ -182,6 +191,90 @@ export const deleteCategory = async (categoryId: number) => {
   try {
     const response = await axios.delete(`${Base_Url}/categories/${categoryId}`);
     return response.data; // Return the deleted category data
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseColor = () => {
+  try {
+    return useQuery<Color>(["color"], async () => {
+      const response: AxiosResponse<Color> = await axios.get(
+        `${Base_Url}/colors`
+      );
+      console.log("response", response);
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseSize = () => {
+  try {
+    return useQuery<Size>(["sizes"], async () => {
+      const response: AxiosResponse<Size> = await axios.get(
+        `${Base_Url}/sizes`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseBrand = () => {
+  try {
+    return useQuery<Brand>(["brand"], async () => {
+      const response: AxiosResponse<Brand> = await axios.get(
+        `${Base_Url}/brands`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseProduct = () => {
+  try {
+    return useQuery<Product>(["product"], async () => {
+      const response: AxiosResponse<Product> = await axios.get(
+        `${Base_Url}/products`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const createProduct = async (formData: FormData): Promise<Product> => {
+  console.log("formData", formData);
+  try {
+    const response: AxiosResponse<Product> = await axios.post(
+      `${Base_Url}/products`,
+      formData
+    );
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateProduct = async (
+  id: string,
+  formData: FormData
+): Promise<Product> => {
+  console.log("formData", formData);
+  try {
+    const response: AxiosResponse<Product> = await axios.put(
+      `${Base_Url}/products/${id}`,
+      formData
+    );
+
+    return response.data; // Return the data directly
   } catch (error: any) {
     throw new Error(error.response.data.message);
   }

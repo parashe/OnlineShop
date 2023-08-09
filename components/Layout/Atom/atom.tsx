@@ -108,9 +108,8 @@ export const Input: React.FC<InputProps> = ({
   className,
   required,
 }) => {
-  console.log("value", value);
   const defaultClassName =
-    "w-full px-4 py-3 rounded-sm shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500";
+    "w-full px-4 py-3 rounded-sm shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500";
 
   const finalClassName = className
     ? defaultClassName + " " + className
@@ -133,6 +132,62 @@ export const Input: React.FC<InputProps> = ({
         onChange={onChange}
         autoComplete={autoComplete}
       />
+      {errorMessage && (
+        <p className="text-red-500 text-xs italic">{errorMessage}</p>
+      )}
+    </div>
+  );
+};
+
+interface TextAreaInputProps {
+  label: string;
+  value?: string | number;
+  placeholder: string;
+  errorMessage?: string;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  autoComplete?: string;
+  type: string;
+  className?: string;
+  required?: boolean;
+}
+
+export const TextAreaInput: React.FC<TextAreaInputProps> = ({
+  label,
+  placeholder,
+  errorMessage,
+  value,
+  onChange,
+  autoComplete,
+  type,
+  className,
+  required,
+  ...rest
+}) => {
+  const defaultClassName =
+    "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ";
+
+  const finalClassName = className
+    ? defaultClassName + " " + className
+    : defaultClassName;
+
+  return (
+    <div>
+      <label
+        className="block text-gray-900 text-sm font-bold mb-2"
+        htmlFor="password"
+      >
+        {label} &nbsp;
+        {required ? <span className="text-red-500">*</span> : null}
+      </label>
+      <textarea
+        className={finalClassName}
+        value={value}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        onChange={onChange}
+      ></textarea>
       {errorMessage && (
         <p className="text-red-500 text-xs italic">{errorMessage}</p>
       )}
@@ -279,8 +334,11 @@ export const Spinner: React.FC<SpinnerProps> = ({
 
 interface DropdownHoverProps {
   buttonText: string;
-  menuItems: { label: string; value: number }[];
-  onSelectItem: (selectedItem: { label: string; value: number }) => void;
+  menuItems: { label: string; value: number | string }[];
+  onSelectItem: (selectedItem: {
+    label: string;
+    value: number | string;
+  }) => void;
   className?: string;
   label?: string;
   required?: boolean;
@@ -301,20 +359,20 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{
     label: string;
-    value: number;
+    value: number | string;
   } | null>(null);
 
   const handleToggle = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
 
-  const handleItemClick = (item: { label: string; value: number }) => {
+  const handleItemClick = (item: { label: string; value: number | string }) => {
     setSelectedItem(item);
     setIsOpen(false);
     onSelectItem(item); // Call the callback function with the selected item
   };
   const defaultClassName =
-    "text-gray-900 focus:ring-4 focus:outline-none border border-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 justify-center inline-flex items-center";
+    "text-gray-900 focus:ring-4 focus:outline-none border border-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 justify-center inline-flex items-center";
 
   const finalClassName = className
     ? defaultClassName + " " + className
@@ -366,14 +424,154 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
           className="w-full z-10 bg-white divide-y divide-gray-100 rounded-lg shadow  dark:bg-gray-700"
         >
           <ul
-            className="py-2 text-sm text-gray-700 dark:text-gray-200"
+            className="py-2 text-sm text-gray-700 dark:text-gray-300 text-center font-semibold"
             aria-labelledby="dropdownHoverButton"
           >
             {menuItems.map((item, index) => (
               <li key={index}>
                 <a
                   href="#"
-                  className="block px-4 py-2 hover:bg-ui-blue hover:text-white dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="block px-4 py-2 hover:bg-ui-red hover:text-white dark:hover:bg-gray-600 dark:hover:text-white"
+                  onClick={() => handleItemClick(item)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
+  );
+};
+
+interface MultipleDropdownHoverProps {
+  buttonText: string;
+  menuItems: { label: string; value: number | string }[];
+  onSelectItems: (
+    selectedItems: Array<{ label: string; value: number | string }>
+  ) => void;
+  className?: string;
+  label?: string;
+  required?: boolean;
+  errorMessage?: string;
+  value?: Array<string | number>;
+}
+
+export const MultipleDropdownHover: React.FC<MultipleDropdownHoverProps> = ({
+  buttonText,
+  menuItems,
+  onSelectItems,
+  className,
+  label,
+  required,
+  value,
+  errorMessage,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<
+    Array<{ label: string; value: number | string }>
+  >([]);
+
+  const handleToggle = () => {
+    setIsOpen((prevIsOpen) => !prevIsOpen);
+  };
+
+  const handleItemClick = (item: { label: string; value: number | string }) => {
+    const selectedItemIndex = selectedItems.findIndex(
+      (selectedItem) => selectedItem.value === item.value
+    );
+    if (selectedItemIndex !== -1) {
+      setSelectedItems((prevSelectedItems) =>
+        prevSelectedItems.filter(
+          (selectedItem) => selectedItem.value !== item.value
+        )
+      );
+    } else {
+      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, item]);
+    }
+
+    // Call the onSelectItems function with the updated selected items
+  };
+
+  React.useEffect(() => {
+    // Call the onSelectItems function with the updated selected items
+    onSelectItems(selectedItems);
+  }, [selectedItems]);
+
+  const isItemSelected = (item: { label: string; value: number | string }) =>
+    selectedItems.some((selectedItem) => selectedItem.value === item.value);
+
+  const defaultClassName =
+    "text-gray-900 focus:ring-4 focus:outline-none border border-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 justify-center inline-flex items-center";
+
+  const finalClassName = className
+    ? defaultClassName + " " + className
+    : defaultClassName;
+
+  console.log(buttonText);
+  return (
+    <>
+      <label
+        className="block text-gray-900 text-sm font-bold mb-2"
+        htmlFor="password"
+      >
+        {label} &nbsp;
+        {required ? <span className="text-red-500">*</span> : null}
+      </label>
+
+      <button
+        id="dropdownHoverButton"
+        type="button"
+        className={finalClassName}
+        data-dropdown-toggle="dropdownHover"
+        data-dropdown-trigger="hover"
+        onClick={handleToggle}
+      >
+        {selectedItems.length > 0
+          ? selectedItems.map((selected) => selected.label).join(", ") // Join labels with commas
+          : value && value.length > 0
+          ? value
+          : buttonText}
+        <svg
+          className="w-2.5 h-2.5 ml-10"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          color="red"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
+      {errorMessage && (
+        <p className="text-red-500 text-xs italic">{errorMessage}</p>
+      )}
+
+      {isOpen && (
+        <div
+          id="dropdownHover"
+          className="w-full z-10 bg-white divide-y divide-gray-100 rounded-lg shadow  dark:bg-gray-700"
+        >
+          <ul
+            className="py-2 text-sm text-gray-700 dark:text-gray-300 text-center font-semibold"
+            aria-labelledby="dropdownHoverButton"
+          >
+            {menuItems.map((item, index) => (
+              <li key={index}>
+                <a
+                  href="#"
+                  className={`block px-4 py-2 ${
+                    isItemSelected(item)
+                      ? "bg-ui-red text-white dark:bg-gray-600 dark:text-white"
+                      : "hover:bg-ui-red hover:text-white dark:hover:bg-gray-600 dark:hover:text-white"
+                  }`}
                   onClick={() => handleItemClick(item)}
                 >
                   {item.label}
@@ -390,10 +588,11 @@ export const DropdownHover: React.FC<DropdownHoverProps> = ({
 interface InputFileProps {
   label: string;
   required?: boolean;
-  onSelectItem?: string;
+  onSelectItem?: string | string[];
   value?: string;
   errorMessage?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
 }
 
 export const InputFile: React.FC<InputFileProps> = ({
@@ -402,6 +601,7 @@ export const InputFile: React.FC<InputFileProps> = ({
   errorMessage,
   onSelectItem,
   onChange,
+  placeholder,
   value,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -453,15 +653,20 @@ export const InputFile: React.FC<InputFileProps> = ({
                 </p>
               )}
             </p>
+            <p className="text-red-500 text-xs italic">
+              Note: &nbsp;<span className="text-ui-blue">{placeholder}</span>
+            </p>
           </div>
           <input
             id="dropzone-file"
             type="file"
             className="hidden"
             onChange={handleChange}
+            multiple
           />
         </label>
       </div>
+
       {errorMessage && (
         <p className="text-red-500 text-xs italic">{errorMessage}</p>
       )}
