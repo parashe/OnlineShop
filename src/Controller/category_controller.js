@@ -7,6 +7,7 @@ exports.createCategory = async (req, res) => {
   try {
     const { categoryName, parentCategory } = req.body;
     console.log(req.file);
+    console.log(categoryName, parentCategory);
 
     const categoryImage = req.file ? req.file.path : "";
 
@@ -17,11 +18,14 @@ exports.createCategory = async (req, res) => {
     let category = await Category.findOne({ slug });
 
     if (!category) {
+      // Set parentCategory to null if it is an empty string or not provided
+      const sanitizedParentCategory = parentCategory || null;
+
       // Create the new category object
       category = new Category({
         categoryName,
         slug,
-        parentCategory,
+        parentCategory: sanitizedParentCategory,
         categoryImage,
       });
 
@@ -42,6 +46,54 @@ exports.createCategory = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Error creating category.", error });
+  }
+};
+
+exports.getCategoriesWithParent = async (req, res) => {
+  try {
+    // Find all categories where the parentCategory field is not null
+    const categories = await Category.find({ parentCategory: { $ne: null } });
+
+    if (categories.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No categories found with a non-null parentCategory.",
+        status: 404,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      categories: categories,
+      message: "Categories retrieved successfully.",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching categories.", error });
+  }
+};
+
+exports.getCategoriesWithoutParent = async (req, res) => {
+  try {
+    // Find all categories where the parentCategory field is null
+    const categories = await Category.find({ parentCategory: null });
+
+    if (categories.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No categories found with a null parentCategory.",
+        status: 404,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      categories: categories,
+      message: "Categories retrieved successfully.",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching categories.", error });
   }
 };
 
@@ -127,6 +179,7 @@ exports.updateCategory = async (req, res) => {
 
     res.status(200).json({
       success: true,
+
       category: updatedCategory,
       message: "Category updated successfully.",
       status: 200,
@@ -147,7 +200,11 @@ exports.deleteCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    res.status(200).json({ message: "Category deleted successfully" });
+    res.status(201).json({
+      success: true,
+      message: "Category deleted successfully",
+      status: 200,
+    });
   } catch (error) {
     res.status(500).json({ message: "Error deleting category", error });
   }

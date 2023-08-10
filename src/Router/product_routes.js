@@ -28,7 +28,7 @@ router.get("/api/products/:id", controller.getProductById);
 router.delete("/api/products/:id", controller.deleteProductById);
 router.put(
   "/api/products/:id",
-  multerUploadMultiple("productImages", 6),
+  multerUploadMultiple("productImages", 10),
   controller.updateProduct
 );
 // Export the router

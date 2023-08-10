@@ -23,8 +23,19 @@ router.put(
   multerUpload("categoryImage"),
   controller.updateCategory
 );
+
 router.get("/api/categories/:parentId", controller.getCategoriesByParentId);
 router.get("/api/categories", controller.getAllCategories);
+router.get("/api/categories-with-parentId", controller.getCategoriesWithParent);
+router.get(
+  "/api/categories-without-parentId",
+  controller.getCategoriesWithoutParent
+);
+router.get(
+  "/api/categories-without-parentId",
+  controller.getCategoriesWithoutParent
+);
 
+router.delete("/api/categories/:id", controller.deleteCategory);
 // Export the router
 module.exports = router;

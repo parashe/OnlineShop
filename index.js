@@ -24,6 +24,9 @@ const colorroutes = require("./src/Router/color_routes");
 const brandroutes = require("./src/Router/brand_routes");
 const productroutes = require("./src/Router/product_routes");
 
+//this is to show image
+app.use("/", express.static("Images"));
+
 app.use(authRoutes);
 app.use(categoryroutes);
 app.use(sizeroutes);

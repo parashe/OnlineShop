@@ -49,11 +49,6 @@ const multerUpload = (fieldName) => (req, res, next) => {
         .json({ message: "File upload error.", error: err.message });
     }
 
-    // Check if no files were uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: "No image file uploaded." });
-    }
-
     next();
   });
 };

@@ -5,7 +5,7 @@ exports.createBrand = async (req, res) => {
     const { brandName } = req.body;
     console.log(req.file);
 
-    const brandImage = req.file ? req.file.path : "";
+    const brandImage = req.file ? req.file.filename : "";
 
     // Create the new brand object
     const brand = new Brand({

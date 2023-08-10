@@ -9,7 +9,6 @@ exports.createProduct = async (req, res) => {
       category,
       price,
       stockQuantity,
-      productImages,
       brand,
       colors,
       sizes,
@@ -24,7 +23,7 @@ exports.createProduct = async (req, res) => {
     const productUploadedImage = [];
     if (req.files) {
       for (let i = 0; i < req.files.length; i++) {
-        productUploadedImage.push(req.files[i].path);
+        productUploadedImage.push(req.files[i].filename);
       }
     }
 
@@ -75,11 +74,6 @@ exports.createProduct = async (req, res) => {
       product.availability = availability;
     }
 
-    // Check if discountPrice is provided and assign it to the product
-    if (discountPrice) {
-      product.discountPrice = discountPrice;
-    }
-
     // Check if rating is provided and assign it to the product
     if (rating) {
       product.rating = rating;
@@ -98,6 +92,13 @@ exports.createProduct = async (req, res) => {
     // Check if createdBy is provided and assign it to the product
     if (createdBy) {
       product.createdBy = createdBy;
+    }
+    if (price) {
+      product.price = product.price - (discountPrice / 100) * product.price;
+    }
+    // Check if discountPrice is provided and assign it to the product
+    if (discountPrice) {
+      product.discountPrice = discountPrice;
     }
 
     // Save the product to the database
@@ -202,6 +203,9 @@ exports.updateProduct = async (req, res) => {
 
     const productId = req.params.id;
 
+    console.log(req.files);
+    console.log(req.body);
+
     // Check if the required fields are present in the request body
     if (!productName || !category || !price || !stockQuantity) {
       return res.status(400).json({
@@ -226,12 +230,13 @@ exports.updateProduct = async (req, res) => {
       }
     }
 
+    const price_updated = product.price - (discountPrice / 100) * product.price;
     // Create the updatedFields object and filter out undefined fields
     const updatedFields = {
       productName,
       description,
       category,
-      price,
+      price: price_updated,
       stockQuantity,
       brand,
       colors,
