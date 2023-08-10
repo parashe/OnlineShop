@@ -31,6 +31,8 @@ const Product = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showmodal, setshowmodal] = useState(false);
   const [modalData, setModalData] = useState<Product | null>(null);
+  const [showViewmodal, setshowViewmodal] = useState(false);
+  const [viewData, setViewData] = useState<Product | null>(null);
 
   const productData = UseProduct();
 
@@ -54,6 +56,11 @@ const Product = () => {
   const handleEditModal = (product: Product) => {
     setModalData(product);
     setshowmodal(true);
+  };
+
+  const handleViewModal = (product: Product) => {
+    setViewData(product);
+    setshowViewmodal(true);
   };
 
   const renderContent = (item: any) => {
@@ -81,7 +88,10 @@ const Product = () => {
         <td className="px-6 py-4">{item.stockQuantity}</td>
 
         <td className="px-6 py-4">
-          <Button className="px-2 py-2 rounded-sm bg-green-500 text-white">
+          <Button
+            className="px-2 py-2 rounded-sm bg-green-500 text-white"
+            onClick={() => handleViewModal(item)}
+          >
             <span className="flex">
               {" "}
               <Eye fg="white" className="mt-1 mr-1"></Eye> View
@@ -107,6 +117,15 @@ const Product = () => {
             <ProductEditModalDetails
               onClose={() => setshowmodal(false)}
               data={modalData}
+            />
+          </Modal>
+        )}
+
+        {viewData && (
+          <Modal isModalVisible={showViewmodal}>
+            <ProductViewModalDetails
+              onClose={() => setshowViewmodal(false)}
+              data={viewData}
             />
           </Modal>
         )}
@@ -587,8 +606,8 @@ const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
                   onChange={(e) => handleDiscountedPriceChange(e.target.value)}
                   autoComplete="off"
                   type="number"
-                  label="Discount Price"
-                  placeholder="Discount Price"
+                  label="Discount Percentage"
+                  placeholder="Discount Percentage"
                   errorMessage={discountedPrice_ErrorMsg}
                   required={true}
                 />
@@ -1099,8 +1118,8 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
     );
   } else {
     windowContent = (
-      <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:w-[1300px] w-full h-full overflow-y-auto ">
-        <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600">
+      <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:w-[1300px] w-full h-full overflow-y-auto  ">
+        <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600  ">
           <h3 className="px-10 text-xl font-semibold text-gray-900 dark:text-white">
             Create New Category
           </h3>
@@ -1170,8 +1189,8 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
                     }
                     autoComplete="off"
                     type="number"
-                    label="Discount Price"
-                    placeholder="Discount Price"
+                    label="Discount Percentage"
+                    placeholder="Discount Percentage"
                     errorMessage={discountedPrice_ErrorMsg}
                     required={true}
                   />
@@ -1312,6 +1331,214 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
                 )}
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return <>{windowContent}</>;
+};
+
+type ProducViewProps = {
+  onClose: () => void; // Define the type of toggleModal
+  data: Product;
+};
+const ProductViewModalDetails = ({ onClose, data }: ProducViewProps) => {
+  const {
+    productName,
+    description,
+    price,
+    discountPrice,
+    stockQuantity,
+    productImages,
+    rating,
+    sizes,
+    brand,
+    colors,
+  } = data;
+
+  const Brand = UseBrand();
+  const allbrand = React.useMemo(() => Brand?.data, [Brand?.data]);
+
+  const color = UseColor();
+
+  const allcolor = React.useMemo(() => color?.data, [color?.data]);
+
+  const Sizes = UseSize();
+  const allsizes = React.useMemo(() => Sizes?.data, [Sizes?.data]);
+  const brandData = allbrand?.brands.find((item) => {
+    return item._id === brand;
+  });
+
+  const colorData = allcolor?.colors.filter((color) => {
+    return Array.isArray(colors) && colors.includes(color._id);
+  });
+
+  const sizesData =
+    sizes &&
+    allsizes?.sizes.filter(
+      (size) => Array.isArray(sizes) && sizes && sizes.includes(size._id)
+    );
+
+  const fullPrice = price + (Number(discountPrice) / 100) * Number(price);
+
+  let windowContent = <></>;
+  if (Brand.isLoading || color.isLoading || Sizes.isLoading) {
+    windowContent = (
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
+        <Spinner size={8} color="text-light-200" />
+      </div>
+    );
+  } else if (Brand.error || color.error || Sizes.error) {
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
+        </div>
+      </div>
+    );
+  } else if (!allbrand || !allsizes || !allcolor) {
+    windowContent = (
+      <div className="container">
+        <div className="flex w-full justify-center">
+          <p className="text-ui-red">Network Error or Data not available</p>
+        </div>
+      </div>
+    );
+  } else {
+    windowContent = (
+      <div className="relative bg-white rounded-lg shadow dark:bg-gray-500 md:w-[1200px] md:h-[90%] h-full w-full overflow-y-auto">
+        <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600 overflow-y-auto">
+          <h3 className="px-10 text-xl font-semibold text-gray-900 dark:text-white">
+            {productName}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <svg
+              className="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+            <span className="sr-only">Close modal</span>
+          </button>
+        </div>
+
+        <div className="container mx-auto p-12 pt-8 w-full pb-10 bg-gray-100">
+          <div className="md:max-w-[1300px] p-6 bg-white pb-10">
+            <div className="grid grid-cols-3 gap-2">
+              {productImages && productImages.length > 0
+                ? productImages.map((image, index) => (
+                    <div key={index} className="col-span-1">
+                      <Image
+                        style={{ width: "250px", height: "250px" }}
+                        width={250}
+                        height={250}
+                        src={Image_Url + image}
+                        alt={productName}
+                        className="rounded-lg shadow-md"
+                      />
+                    </div>
+                  ))
+                : null}
+
+              <div className="col-span-3 space-y-4">
+                <h1 className="text-[16px] font-bold text-gray-900 dark:text-white pt-3 pb-3 mt-2">
+                  Description
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {description}
+                </p>
+                <div className="flex items-center">
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">
+                    {price ? `£${price}` : null}
+                  </span>
+                  {discountPrice && (
+                    <span className="ml-2 font-semibold text-sm text-gray-700 line-through dark:text-gray-400">
+                      £{fullPrice}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center">
+                  {brandData && (
+                    <>
+                      <div className="flex items-center">
+                        <h1 className="text-[16px] font-bold text-gray-900 dark:text-white  pb-3 mt-2">
+                          Brand :
+                        </h1>
+                        <p
+                          className="text-ui-red text-sm dark:text-gray-400 
+                        px-3 font-semibold"
+                        >
+                          {brandData.brandName}
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  <div>
+                    {sizesData && sizesData.length > 0 && (
+                      <>
+                        <div className="flex items-center">
+                          <h1 className="text-[16px] font-bold text-gray-900 dark:text-white  pb-3 mt-2">
+                            Sizes :
+                          </h1>
+                          {sizesData.map((size: any) => (
+                            <p
+                              className="text-ui-red text-sm dark:text-gray-400 
+                        px-3 font-semibold"
+                            >
+                              {size.sizeName}
+                            </p>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    {colorData && colorData.length > 0 && (
+                      <>
+                        <div className="flex items-center">
+                          <h1 className="text-[16px] font-bold text-gray-900 dark:text-white  pb-3 mt-2">
+                            Color :
+                          </h1>
+                          {colorData.map((color) => (
+                            <p
+                              className="text-ui-red text-sm dark:text-gray-400 
+                        px-3 font-semibold"
+                            >
+                              {color.colorName}
+                            </p>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <h1
+                  className="text-[16px] font-bold text-gray-900 dark:text-white 
+               pb-3 mt-2 "
+                >
+                  Available:{" "}
+                  <span className="text-ui-red  font-semibold text-sm">
+                    {stockQuantity} in stock
+                  </span>
+                </h1>
+              </div>
+            </div>
           </div>
         </div>
       </div>
