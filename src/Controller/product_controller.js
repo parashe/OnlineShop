@@ -1,6 +1,6 @@
 const Product = require("../Models/product_model");
 const slugify = require("slugify");
-
+const mongoose = require("mongoose");
 exports.createProduct = async (req, res) => {
   try {
     const {
@@ -130,6 +130,96 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Error retrieving products.", error });
   }
 };
+
+exports.getProductDetailsByID = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required.",
+        status: 400,
+      });
+    } else {
+      const product = await Product.aggregate([
+        {
+          $match: { _id: new mongoose.Types.ObjectId(productId) },
+        },
+        {
+          $lookup: {
+            from: "categories", // Change this to the actual collection name for categories
+            localField: "category",
+            foreignField: "_id",
+            as: "categoryInfo",
+          },
+        },
+        {
+          $lookup: {
+            from: "sizes", // Change this to the actual collection name for sizes
+            localField: "sizes",
+            foreignField: "_id",
+            as: "sizesInfo",
+          },
+        },
+        {
+          $lookup: {
+            from: "brands", // Change this to the actual collection name for brands
+            localField: "brand",
+            foreignField: "_id",
+            as: "brandInfo",
+          },
+        },
+        {
+          $lookup: {
+            from: "colors", // Change this to the actual collection name for colors
+            localField: "colors",
+            foreignField: "_id",
+            as: "colorsInfo",
+          },
+        },
+        {
+          $project: {
+            productName: 1,
+            description: 1,
+            price: 1,
+            stockQuantity: 1,
+            productImages: 1,
+            availability: 1,
+            discountPrice: 1,
+            rating: 1,
+            relatedProducts: 1,
+            reviews: 1,
+            createdBy: 1,
+            categoryInfo: { $arrayElemAt: ["$categoryInfo", 0] },
+            sizesInfo: 1,
+            brandInfo: { $arrayElemAt: ["$brandInfo", 0] },
+            colorsInfo: 1,
+          },
+        },
+      ]);
+
+      if (!product || product.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found.",
+          status: 404,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        products: product[0],
+        message: "Product retrieved successfully.",
+        status: 200,
+      });
+    }
+  } catch (error) {
+    console.error("Error retrieving product:", error);
+    res.status(500).json({ message: "Error retrieving product.", error });
+  }
+};
+
 exports.getProductById = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -230,13 +320,12 @@ exports.updateProduct = async (req, res) => {
       }
     }
 
-    const price_updated = product.price - (discountPrice / 100) * product.price;
     // Create the updatedFields object and filter out undefined fields
     const updatedFields = {
       productName,
       description,
       category,
-      price: price_updated,
+      price,
       stockQuantity,
       brand,
       colors,

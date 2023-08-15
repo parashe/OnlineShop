@@ -24,6 +24,7 @@ router.post(
 );
 
 router.get("/api/products", controller.getAllProducts);
+router.get("/api/productsdetails/:id", controller.getProductDetailsByID);
 router.get("/api/products/:id", controller.getProductById);
 router.delete("/api/products/:id", controller.deleteProductById);
 router.put(
