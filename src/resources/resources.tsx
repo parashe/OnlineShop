@@ -157,45 +157,7 @@ export const UseCategoryWithParentID = () => {
   }
 };
 
-export const createCategory = async (
-  formData: FormData
-): Promise<Categories> => {
-  try {
-    const response: AxiosResponse<Categories> = await axios.post(
-      `${Base_Url}/categories`,
-      formData
-    );
-
-    return response.data; // Return the data directly
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
-
-export const updateCategory = async (
-  categoryId: number,
-  formData: FormData
-) => {
-  try {
-    const response = await axios.put(
-      `${Base_Url}/categories/${categoryId}`,
-      formData
-    );
-    return response.data; // Return the updated category data
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
-
 // Function to delete a category
-export const deleteCategory = async (categoryId: number) => {
-  try {
-    const response = await axios.delete(`${Base_Url}/categories/${categoryId}`);
-    return response.data; // Return the deleted category data
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
 
 export const UseColor = () => {
   try {
@@ -237,13 +199,30 @@ export const UseBrand = () => {
   }
 };
 
-export const UseProduct = () => {
+export const UseProduct = (id?: string) => {
   try {
     return useQuery<Product>(["product"], async () => {
       const response: AxiosResponse<Product> = await axios.get(
         `${Base_Url}/products`
       );
       return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const useProductDetails = (id?: string) => {
+  try {
+    return useQuery<Product, Error>(["productdetails", id], async () => {
+      if (!id) {
+        throw new Error("No product id provided");
+      }
+
+      const response: AxiosResponse<Product> = await axios.get(
+        `${Base_Url}/productsdetails/${id}`
+      );
+      return response.data;
     });
   } catch (error: any) {
     throw new Error(error.response.data.message);

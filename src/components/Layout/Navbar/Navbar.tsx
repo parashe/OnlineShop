@@ -23,14 +23,14 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white border-gray-200 dark:border-gray-600 dark:bg-gray-900 shadow-md fixed top-0 left-0 z-50 w-full ">
-      <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
+      <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-2">
         <a href="https://flowbite.com" className="flex items-center">
           <Image
-            style={{ width: 80, height: 80 }}
-            width={60}
-            height={60}
+            style={{ width: 100, height: 60 }}
+            width={500}
+            height={500}
             src="/images/logo.png"
-            className="h-10 mr-3"
+            className="h-full mr-3"
             alt="Online shop Logo"
           />
         </a>

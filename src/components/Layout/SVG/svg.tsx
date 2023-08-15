@@ -124,3 +124,63 @@ export const SearchButton: React.FC<{
     />
   </svg>
 );
+
+export const StartRating: React.FC<{}> = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="1em"
+    viewBox="0 0 576 512"
+    fill="yellow"
+    className="w-6 h-6   mr-1"
+  >
+    <path
+      fill="yellow"
+      d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
+    />
+  </svg>
+);
+
+export const FacebookSvg: React.FC<{}> = () => (
+  <svg
+    fill="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    className="w-5 h-5"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="#3b82f6"
+      d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
+    ></path>
+  </svg>
+);
+
+export const TwitterSvg: React.FC<{}> = () => (
+  <svg
+    fill="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    className="w-5 h-5"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="#3b82f6"
+      d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"
+    ></path>
+  </svg>
+);
+
+export const MessengerSvg: React.FC<{}> = () => (
+  <svg
+    fill="#3b82f6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    className="w-5 h-5"
+    viewBox="0 0 24 24"
+  >
+    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
+  </svg>
+);

@@ -54,7 +54,7 @@ export type Brand = {
 export type Product = {
   _id: string;
   productName: string;
-  productImages: [];
+  productImages: string[];
   brand: string;
   category: string;
   stockQuantity: string;
@@ -65,6 +65,11 @@ export type Product = {
   description: string;
   price: string;
   discountPrice: string;
+  slug: string;
+  brandInfo: Brand;
+  categoryInfo: Categories;
+  colorInfo: Color;
+  sizeInfo: Size;
 };
 
 export type Carousel = {

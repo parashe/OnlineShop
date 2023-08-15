@@ -333,6 +333,14 @@ export const Spinner: React.FC<SpinnerProps> = ({
   );
 };
 
+export const PageSpinner = () => {
+  return (
+    <>
+      <div className="loader"></div>
+    </>
+  );
+};
+
 interface DropdownHoverProps {
   buttonText: string;
   menuItems: { label: string; value: number | string }[];
