@@ -26,8 +26,8 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   };
 
   return (
-    <div className="container flex">
-      <div className="mr-3">
+    <div className="container md:flex lg:flex">
+      <div className="mr-3 flex md:flex-none lg:flex-none md:block lg:block">
         {images.map((image, index) => (
           <div
             key={index}
