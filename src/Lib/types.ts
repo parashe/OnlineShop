@@ -7,6 +7,9 @@ export type Login = {
   accessToken: string;
   refreshToken: string;
   error: string;
+  fullName: string;
+  phone: string;
+  _id: string;
 };
 export type User = {
   _id: string;
@@ -60,7 +63,7 @@ export type Product = {
   stockQuantity: string;
   sizes: Size;
   colors: Color;
-  products: Product[];
+  products: Product;
   rating: number;
   description: string;
   price: string;
@@ -68,8 +71,8 @@ export type Product = {
   slug: string;
   brandInfo: Brand;
   categoryInfo: Categories;
-  colorInfo: Color;
-  sizeInfo: Size;
+  colorsInfo: Color;
+  sizesInfo: Size;
 };
 
 export type Carousel = {
@@ -77,4 +80,19 @@ export type Carousel = {
   carouselImage: string;
   title: string;
   alt?: string;
+};
+
+export type Cart = {
+  _id: string;
+  product: string;
+  quantity: number;
+  size: string;
+  color: string;
+  price: string;
+  user_id: string;
+  success: boolean;
+  user: string;
+  cartItems: Cart[];
+  productName: string;
+  productImage: string;
 };

@@ -18,8 +18,8 @@ export const Products = () => {
   if (productData.isLoading) {
     // Show a spinner if data is still loading
     windowContent = (
-      <div className="fixed  left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center  bg-opacity-40 z-[100]">
+        <Spinner size={16} color="text-light-200" />
       </div>
     );
   } else if (productData.error || !allproductData) {
@@ -56,7 +56,7 @@ export const Products = () => {
           </div>
           <div className="grid grid-cols-4 gap-1">
             {allproductData &&
-              allproductData.products
+              allproductData?.products
                 .slice(0, 8) // Slice the first 8 products
                 .map((product, index) => (
                   <div key={index}>
@@ -64,8 +64,8 @@ export const Products = () => {
                       href={{
                         pathname: "/productdetails",
                         query: {
-                          slug: "women-simple-tshirt",
-                          id: "64c9645fb2d9730d682874ef",
+                          slug: product.slug,
+                          id: product._id,
                         },
                       }}
                     >

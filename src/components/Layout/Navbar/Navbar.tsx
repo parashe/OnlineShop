@@ -3,12 +3,19 @@ import Image from "next/image";
 import React from "react";
 import { Button, Spinner } from "../Atom/atom";
 import Modal from "../Modal/Modal";
-import { Cart, SearchButton } from "../SVG/svg";
+import { Cart, SearchButton, UserSvg } from "../SVG/svg";
 import { Categories } from "@/Lib/types";
+import SignUp from "../Auth/signup";
+import LoginPage from "../Auth/login";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import Cookies from "js-cookie";
 const Navbar = () => {
   const [isSearchModalVisible, setisSearchModalVisible] = React.useState(false);
   const [showcategory, setshowcategory] = React.useState(false);
   const [showNavList, setshowNavList] = React.useState(false);
+  const [singupModalVisible, setSingupModalVisible] = React.useState(false);
+  const [loginModalVisible, setLoginModalVisible] = React.useState(false);
+  const [showuserDropdown, setshowuserDropdown] = React.useState(false);
 
   const { data, isLoading, error } = UseCategory();
 
@@ -19,6 +26,95 @@ const Navbar = () => {
 
   const handleShowCategory = () => {
     setshowcategory(!showcategory);
+  };
+
+  const handleShowDropdownList = () => {
+    setshowuserDropdown(!showuserDropdown);
+  };
+
+  const { isAuthenticated, logout } = useAuth();
+  const fullName = Cookies.get("fullName");
+
+  console.log("isauth", isAuthenticated);
+
+  const handleUser = () => {
+    return (
+      <>
+        <div className="relative">
+          <button
+            id="dropdownNavbarLink"
+            data-dropdown-toggle="dropdownNavbar"
+            className="flex items-center justify-between w-full py-2 pl-3 pr-4 text-ui-red rounded hover:text-red-700 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+            onClick={handleShowDropdownList}
+          >
+            <span className="flex items-center">
+              <UserSvg fg="red" /> &nbsp; {fullName}
+            </span>
+            <svg
+              className="w-2.5 h-2.5 ml-2.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 4 4 4-4"
+              />
+            </svg>
+          </button>
+
+          {showuserDropdown && (
+            <div
+              id="dropdownNavbar"
+              className="z-10 absolute origin-bottom right-0 left-0 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-full md:w-44 dark:bg-gray-700 dark:divide-gray-600"
+            >
+              <ul
+                className="py-2 text-sm text-gray-700 dark:text-gray-400"
+                aria-labelledby="dropdownLargeButton"
+              >
+                <li>
+                  <a
+                    href="#"
+                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
+                  >
+                    My Account
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
+                  >
+                    My Cart
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
+                  >
+                    My Orders
+                  </a>
+                </li>
+              </ul>
+              <div className="py-1">
+                <a
+                  href="#"
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-200"
+                  onClick={logout}
+                >
+                  Sign out
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
   };
 
   return (
@@ -161,14 +257,30 @@ const Navbar = () => {
                 <Cart fg="red" />
               </a>
             </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 pl-3 pr-4 text-ui-red rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-ui-red md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
-              >
-                Login
-              </a>
-            </li>
+            {isAuthenticated ? (
+              <li>{handleUser()}</li>
+            ) : (
+              <>
+                <li>
+                  <a
+                    href="#"
+                    className="block py-2 pl-3 pr-4 text-ui-red rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-ui-red md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
+                    onClick={() => setLoginModalVisible(true)}
+                  >
+                    Login
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="block py-2 pl-3 pr-4 text-ui-red rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-ui-red md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
+                    onClick={() => setSingupModalVisible(true)}
+                  >
+                    Sign Up
+                  </a>
+                </li>
+              </>
+            )}
           </ul>
         </div>
 
@@ -179,6 +291,22 @@ const Navbar = () => {
                 setisSearchModalVisible(!isSearchModalVisible);
               },
             })}
+          </Modal>
+        )}
+
+        {singupModalVisible && (
+          <Modal isModalVisible={singupModalVisible}>
+            <SignUp
+              onClose={() => setSingupModalVisible(!singupModalVisible)}
+            ></SignUp>
+          </Modal>
+        )}
+
+        {loginModalVisible && (
+          <Modal isModalVisible={loginModalVisible}>
+            <LoginPage
+              onClose={() => setLoginModalVisible(!loginModalVisible)}
+            />
           </Modal>
         )}
       </div>

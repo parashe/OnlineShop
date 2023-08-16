@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import {
   Brand,
   Carousel,
+  Cart,
   Categories,
   Color,
   Login,
@@ -12,6 +13,7 @@ import {
 } from "../Lib/types";
 import { Base_Url } from "../utils/config";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 interface LoginRequestBody {
   email: string;
@@ -81,7 +83,7 @@ export const createUser = async (
       password,
       fullName,
       phone,
-      roles: ["admin"],
+      roles: ["user"],
     };
 
     const response: AxiosResponse<User> = await axios.post(
@@ -288,4 +290,57 @@ export const UseCarousel = () => {
   };
 
   return useQuery<Carousel[]>(["carousel"], fetchCarouselData);
+};
+
+interface AddToCartProps {
+  product: string;
+  quantity: number;
+  size: string;
+  color: string;
+  price: string;
+}
+
+export const AddToCart = async (cartItems: AddToCartProps[]): Promise<Cart> => {
+  try {
+    const user = Cookies.get("userID");
+    const response: AxiosResponse<Cart> = await axios.post(
+      `${Base_Url}/carts`,
+      { cartItems, user }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseCart = () => {
+  try {
+    return useQuery<Cart, Error>(["cart"], async () => {
+      const user = Cookies.get("userID");
+
+      const response: AxiosResponse<Cart> = await axios.get(
+        `${Base_Url}/carts/${user}`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const RemoveFromCart = async (productId: string): Promise<Cart> => {
+  try {
+    const user_id = Cookies.get("userID");
+    const response: AxiosResponse<Cart> = await axios.post(
+      `${Base_Url}/removecarts`,
+      { productId, user_id } // Send the product ID and user in the request body
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log("Error:", error.message);
+    throw new Error(error.response.data.message);
+  }
 };

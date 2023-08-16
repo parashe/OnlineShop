@@ -3,28 +3,150 @@ import Image from "next/image";
 import React, { useState } from "react";
 import ImageGallery from "./imagegallery";
 import { Image_Url } from "@/utils/config";
-import { UseColor, UseSize } from "@/resources/resources";
-import { Button, MultipleDropdownHover, SelectWithArrow } from "../Atom/atom";
+import { AddToCart, UseColor, UseSize } from "@/resources/resources";
+import {
+  Alert,
+  Button,
+  MultipleDropdownHover,
+  SelectWithArrow,
+  Spinner,
+} from "../Atom/atom";
 import { RatingSection } from "./productcard";
-import { FacebookSvg, MessengerSvg, TwitterSvg } from "../SVG/svg";
+import {
+  CardSvg,
+  Cart,
+  FacebookSvg,
+  MessengerSvg,
+  MinusSvg,
+  PlusSvg,
+  ShippingSvg,
+  TwitterSvg,
+  UserSvg,
+} from "../SVG/svg";
+import { useAuth } from "@/context/AuthContext";
 
+// Import necessary dependencies
+import Cookies from "js-cookie";
+import Modal from "../Modal/Modal";
+import LoginPage from "../Auth/login";
+
+// Define the props for the component
 interface ProductCardProps {
   product: Product;
 }
 
+// Product details card component
 const ProductDetailsCard: React.FC<ProductCardProps> = ({
   product,
 }: ProductCardProps) => {
+  // State variables to manage selected size, color, quantity, alerts, login modal, and loading status
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(" ");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [loginModalVisible, setLoginModalVisible] = React.useState(false);
+  const { isAuthenticated } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Function to handle closing the alert
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+  };
+
+  // Function to handle adding an item to the cart
+  const handleAddToCart = async () => {
+    if (isAuthenticated) {
+      setIsSaving(true);
+
+      const cartItem = [
+        {
+          product: product._id,
+          quantity: quantity,
+          size: selectedSize,
+          color: selectedColor,
+          price: product.price,
+        },
+      ];
+      try {
+        const res = await AddToCart(cartItem);
+        if (res.success) {
+          setIsSaving(false);
+          setIsAlertVisible(true);
+          setAlertMessage("Item added to cart");
+          setAlertType("success");
+        }
+      } catch (error) {
+        setIsSaving(false);
+        setAlertType("error");
+        setAlertMessage("Error adding item to cart");
+      }
+    } else {
+      setLoginModalVisible(true);
+    }
+  };
+
+  // Calculate full price after discount
   const fullPrice =
     (Number(product.discountPrice) / 100) * Number(product.price) +
     Number(product.price);
-  const sizeOptions = ["SM", "M", "L", "XL"];
+
+  // Function to generate color dropdown options
+  const colorsDropdown = () => {
+    const listofcolors = [] as string[];
+
+    Array.isArray(product.colorsInfo) &&
+      product.colorsInfo.forEach((color) => {
+        listofcolors.push(color.colorName);
+      });
+
+    const handleselectedColor = (color: string) => {
+      setSelectedColor(color);
+    };
+
+    return (
+      <div className="flex ml-6 items-center">
+        <span className="mr-3">Colors</span>
+        <SelectWithArrow
+          options={listofcolors}
+          onChange={handleselectedColor}
+          selectedValue={selectedColor}
+        />
+      </div>
+    );
+  };
+
+  // Function to generate sizes dropdown options
+  const sizesDropdown = () => {
+    const listofsizes = [] as string[];
+
+    Array.isArray(product.sizesInfo) &&
+      product.sizesInfo.forEach((size) => {
+        listofsizes.push(size.sizeName);
+      });
+
+    const handleselectedSize = (size: string) => {
+      setSelectedSize(size);
+    };
+
+    return (
+      <div className="flex ml-6 items-center">
+        <span className="mr-3">Sizes</span>
+        <SelectWithArrow
+          options={listofsizes}
+          onChange={handleselectedSize}
+          selectedValue={selectedSize}
+        />
+      </div>
+    );
+  };
 
   return (
-    <section className="mt-12 container mx-auto ">
-      <div className="text-gray-700 body-font overflow-hidden bg-white mb-10 ">
+    <section className=" container mx-auto  ">
+      <div className="text-gray-700 body-font overflow-hidden bg-white mb-10 justify-center ">
         <div className=" px-5 py-24 flex flex-wrap w-full">
-          <div className=" mx-auto flex flex-wrap ">
+          <div className=" mx-auto flex flex-wrap justify-center ">
             <div className="flex flex-wrap lg:w-1/2 md:1/2">
               <ImageGallery images={product?.productImages} />
             </div>
@@ -69,30 +191,73 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
               </div>
 
               <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
-                <div className="flex ml-6 items-center">
-                  <span className="mr-3">Size</span>
-                  <SelectWithArrow options={sizeOptions} />
-                </div>
-                <div className="flex ml-6 items-center">
-                  <span className="mr-3">Size</span>
-                  <SelectWithArrow options={sizeOptions} />
-                </div>
+                {colorsDropdown()}
+
+                {sizesDropdown()}
+              </div>
+              <div className="flex flex-wrap space-x-0  mb-5">
+                <Button
+                  className="bg-ui-red"
+                  onClick={() => setQuantity(quantity - 1)}
+                >
+                  {" "}
+                  <MinusSvg fg="white" />
+                </Button>
+                <input
+                  className="mx-2 border text-center w-8"
+                  type="text"
+                  value={quantity}
+                />
+                <Button
+                  className="bg-ui-red"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  <PlusSvg fg="white" />
+                </Button>
               </div>
               <div className="flex flex-wrap space-x-4 mb-5  ">
-                <Button className="bg-gray-700 px-10 ">Add to Cart</Button>
-                <Button className="bg-orange-500 px-10">Buy Now</Button>
+                <Button
+                  className="bg-gray-700 px-14 py-3 flex hover:bg-gray-800 items-center "
+                  onClick={handleAddToCart}
+                >
+                  {isSaving ? (
+                    <div className="flex justify-center">
+                      <Spinner color="text-gray" size={6} />
+                    </div>
+                  ) : (
+                    <span className="flex  items-center">
+                      <Cart fg="white" /> &nbsp; Add to Cart
+                    </span>
+                  )}
+                </Button>
+                <Button className="bg-orange-500 px-14 py-3bg-orange-500 hover:bg-orange-600  flex items-center">
+                  <CardSvg fg="white" /> &nbsp; Buy Now
+                </Button>
               </div>
 
-              <div className=" items-center pb-5  border-b-2 border-gray-200 mb-5">
-                <p className="text-sm text-gray-500 mr-3 py-2">
-                  Free shipping worldwide
+              <div className="flex  items-center pb-5  border-b-2 border-gray-200 mb-5">
+                <p className=" flex text-sm text-gray-700 mr-3 py-2 ">
+                  <ShippingSvg fg="red" />
+                  &nbsp; Free shipping worldwide
                 </p>
-                <p className="text-sm text-gray-500 mr-3 py-2">
-                  100% Secured Payment
+                <p className=" flex text-sm text-gray-700 mr-3 py-2">
+                  <CardSvg fg="red" />
+                  &nbsp; 100% Secured Payment
                 </p>
-                <p className="text-sm text-gray-500 py-2">
-                  Made by the Professionals
+                <p className=" flex text-sm text-gray-700 py-2">
+                  <UserSvg fg="red" />
+                  &nbsp; Made by the Professionals
                 </p>
+              </div>
+
+              <div className="mt-8">
+                {isAlertVisible && (
+                  <Alert
+                    type={alertType}
+                    message={alertMessage}
+                    onClose={handleAlertClose}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -103,7 +268,7 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
               Product Description
             </h1>
           </div>
-          <p className="leading-relaxed text-gray-600 text-lg border-gray-200 border-t-2  py-10  text-justify ">
+          <p className="leading-relaxed text-gray-600 text-md border-gray-200 border-t-2  py-10  text-justify ">
             Fam locavore kickstarter distillery. Mixtape chillwave tumeric
             sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
             juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
@@ -112,6 +277,12 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
           </p>
         </div>
       </div>
+
+      {loginModalVisible && (
+        <Modal isModalVisible={loginModalVisible}>
+          <LoginPage onClose={() => setLoginModalVisible(!loginModalVisible)} />
+        </Modal>
+      )}
     </section>
   );
 };

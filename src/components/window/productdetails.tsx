@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import { Spinner } from "../Layout/Atom/atom";
 import ProductDetailsCard from "../Layout/product/productdetailscard";
-
 interface ProductCardProps {
   slug?: string;
   id?: string;
@@ -13,26 +12,16 @@ const ProductDetails = ({ id }: ProductCardProps) => {
   const router = useRouter();
   const productId = id || router.query.id;
   const productData = useProductDetails(productId ? productId.toString() : "");
-
-  const allproductData = React.useMemo(
-    () => productData?.data?.products,
-    [productData?.data]
-  );
+  const allproductData = productData?.data?.products;
 
   console.log("allproductData", allproductData);
 
-  let windowContent = <></>;
+  let windowContent: JSX.Element;
 
-  if (!productId) {
+  if (!productId || productData.isLoading) {
     windowContent = (
-      <div className="fixed left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
-      </div>
-    );
-  } else if (productData.isLoading) {
-    windowContent = (
-      <div className="fixed left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center  bg-opacity-40 z-[100]">
+        <Spinner size={16} color="text-light-400" />
       </div>
     );
   } else if (productData.error || !allproductData) {
@@ -45,8 +34,8 @@ const ProductDetails = ({ id }: ProductCardProps) => {
     );
   } else {
     windowContent = (
-      <div>
-        {allproductData && <ProductDetailsCard product={allproductData} />}
+      <div className="md:mt-12 md:pt-12">
+        <ProductDetailsCard product={allproductData} />
       </div>
     );
   }
