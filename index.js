@@ -23,6 +23,9 @@ const sizeroutes = require("./src/Router/size_routes");
 const colorroutes = require("./src/Router/color_routes");
 const brandroutes = require("./src/Router/brand_routes");
 const productroutes = require("./src/Router/product_routes");
+const cartroutes = require("./src/Router/cart_routes");
+const addressroutes = require("./src/Router/address_routes");
+const orderroutes = require("./src/Router/order_routes");
 
 //this is to show image
 app.use("/", express.static("Images"));
@@ -33,6 +36,9 @@ app.use(sizeroutes);
 app.use(colorroutes);
 app.use(brandroutes);
 app.use(productroutes);
+app.use(cartroutes);
+app.use(addressroutes);
+app.use(orderroutes);
 
 ///Routes
 const { connectDB } = require("./src/Database/conn");
