@@ -28,21 +28,6 @@ const CartItem: React.FC<CartItemProps> = ({
   return (
     <div className="w-full  bg-white md:py-10 md:px-10  m-0  ">
       <div className="">
-        <div className="flex mt-10 mb-5">
-          <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
-            Product Details
-          </h3>
-          <h3 className="font-semibold  text-gray-600 text-xs uppercase w-1/5 text-center">
-            Quantity
-          </h3>
-          <h3 className="font-semibold  text-gray-600 text-xs uppercase w-1/5 text-center">
-            Price
-          </h3>
-          <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">
-            Total
-          </h3>
-        </div>
-
         <div className="flex items-center hover:bg-gray-100 border-b-2 cursor-pointer border-gray-200 md:px-6 py-5 ">
           {/* Product details */}
           <div className="flex w-2/5">
@@ -60,9 +45,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
             {/* Product info */}
             <div className="flex flex-col justify-center ml-4 flex-grow ">
-              <span className="font-bold text-sm text-justify">
-                {productName}
-              </span>
+              <span className="font-bold text-sm ">{productName}</span>
               <span className="text-red-500 text-xs">{brand}</span>
               <a
                 href="#"

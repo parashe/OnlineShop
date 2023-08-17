@@ -1,3 +1,4 @@
+// Importing necessary components and hooks from various files
 import {
   AddToCart,
   RemoveFromCart,
@@ -8,58 +9,65 @@ import React, { useState } from "react";
 import { Alert, Spinner } from "../Layout/Atom/atom";
 import CartItem from "../Layout/cart/cartitem";
 import CartSummary from "../Layout/cart/cartsummary";
+import { useAuth } from "@/context/AuthContext";
 
+// Defining the main functional component ShoppingCart
 const ShoppingCart: React.FC = () => {
+  // Using the UseCart hook to get cart data
   const cart = UseCart();
 
-  // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
+  // Extracting cart items from the hook response and using useMemo to prevent unnecessary re-renders
   const allcartItems = React.useMemo(
     () => cart?.data?.cartItems || [],
     [cart?.data?.cartItems]
   );
 
+  // State variables to manage the component's state
   const [updatedcartItems, setAllupdatedcartItems] = useState(allcartItems);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(" ");
   const [alertMessage, setAlertMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated } = useAuth();
 
+  // Effect to update local cart items when cart data changes
   React.useEffect(() => {
-    setAllupdatedcartItems(allcartItems);
-  }, [allcartItems]);
+    setAllupdatedcartItems(cart?.data?.cartItems || []);
+  }, [cart?.data?.cartItems]);
 
+  // Function to decrease the quantity of a cart item
   const handleQuantityDecrease = async (index: number) => {
+    // Updating the local state with decreased quantity
     const updatedCartItems = [...updatedcartItems];
     if (updatedCartItems[index].quantity > 0) {
       updatedCartItems[index].quantity--;
       setAllupdatedcartItems(updatedCartItems);
 
+      // Calling the AddToCart function to update the server-side cart
       try {
-        const res = await AddToCart(updatedCartItems);
-        if (res.success) {
-          console.log(res);
-        }
+        await AddToCart(updatedCartItems);
       } catch (error) {
         console.log(error);
       }
     }
   };
 
+  // Function to increase the quantity of a cart item
   const handleQuantityIncrease = async (index: number) => {
+    // Updating the local state with increased quantity
     const updatedCartItems = [...updatedcartItems];
     updatedCartItems[index].quantity++;
     setAllupdatedcartItems(updatedCartItems);
 
+    // Calling the AddToCart function to update the server-side cart
     try {
-      const res = await AddToCart(updatedCartItems);
-      if (res.success) {
-        console.log(res);
-      }
+      await AddToCart(updatedCartItems);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // If loading, display a spinner
   if (isLoading) {
     return (
       <>
@@ -69,23 +77,30 @@ const ShoppingCart: React.FC = () => {
       </>
     );
   }
+
   // Function to handle closing the alert
   const handleAlertClose = () => {
     setIsAlertVisible(false);
   };
 
+  // Function to handle removing an item from the cart
   const handleRemoveCart = async (productId: string) => {
     try {
       if (productId) {
         setIsLoading(true);
+
+        // Optimistically update the local cart items state
         setAllupdatedcartItems((prevCartItems) =>
-          prevCartItems.filter((item) => item.product !== productId)
+          prevCartItems.filter((item) => item._id !== productId)
         );
 
-        const response = await RemoveFromCart(productId); // Call your API function to remove the item
-        console.log(response);
+        // Calling the RemoveFromCart function to remove the item from the server-side cart
+        const response = await RemoveFromCart(productId);
+
+        setIsLoading(false);
+
+        // Displaying an alert based on the response
         if (response.success === true) {
-          setIsLoading(false);
           setIsAlertVisible(true);
           setAlertMessage("Item removed from cart");
           setAlertType("success");
@@ -100,6 +115,7 @@ const ShoppingCart: React.FC = () => {
     }
   };
 
+  // Calculating total number of items and total cost in the cart
   const totalItems =
     allcartItems &&
     allcartItems.reduce((total, item) => total + Number(item.quantity), 0);
@@ -110,30 +126,44 @@ const ShoppingCart: React.FC = () => {
       0
     );
 
-  // Determine the content of the window based on loading, error, or data availability
+  // Determining the content to display based on the authentication and cart data
   let windowContent = <></>;
+  if (!isAuthenticated) {
+    windowContent = (
+      <div className="container mx-auto">
+        <div className=" mt-12 py-32 text-center">
+          <Alert
+            type="error"
+            message="You need to be logged in to view your cart"
+            onClose={handleAlertClose}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Displaying loading spinner if cart data is loading
   if (cart.isLoading) {
-    // Show a spinner if data is still loading
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center  bg-opacity-40 z-[100]">
         <Spinner size={16} color="text-light-200" />
       </div>
     );
   } else if (cart.error || allcartItems.length === 0) {
-    // Show an error message if there was a network error or if data is not available
+    // Displaying an error message if there's an error or no items in the cart
     windowContent = (
       <div className="container mx-auto">
         <div className=" mt-12 py-32 text-center">
           <Alert
             type="error"
-            message="Network Error "
+            message="You don't have any items in your cart"
             onClose={handleAlertClose}
           />
         </div>
       </div>
     );
   } else {
-    // Show the user data table if data is available
+    // Displaying the cart items if everything is okay
     windowContent = (
       <div className="container mx-auto w-full px-2 md:mt-14 ">
         <div className="flex my-10  flex-col md:flex-row">
@@ -149,6 +179,21 @@ const ShoppingCart: React.FC = () => {
                   />
                 )}
               </div>
+            </div>
+            {/* header */}
+            <div className="flex mt-5 mb-5 md:bg-ui-red md:py-5 md:px-5">
+              <h3 className="font-semibold text-gray-600 md:text-white text-xs uppercase w-2/5">
+                Product Details
+              </h3>
+              <h3 className="font-semibold  text-gray-600 md:text-white   text-xs uppercase w-1/5 text-center">
+                Quantity
+              </h3>
+              <h3 className="font-semibold  text-gray-600 md:text-white  text-xs uppercase w-1/5 text-center">
+                Price
+              </h3>
+              <h3 className="font-semibold text-center text-gray-600 md:text-white  text-xs uppercase w-1/5">
+                Total
+              </h3>
             </div>
             {updatedcartItems &&
               updatedcartItems.map((item, index) => (
@@ -188,7 +233,9 @@ const ShoppingCart: React.FC = () => {
     );
   }
 
+  // Rendering the determined content
   return <>{windowContent}</>;
 };
 
+// Exporting the ShoppingCart component as the default export
 export default ShoppingCart;

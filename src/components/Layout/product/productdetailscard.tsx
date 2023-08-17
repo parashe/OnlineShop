@@ -29,6 +29,7 @@ import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
 import Modal from "../Modal/Modal";
 import LoginPage from "../Auth/login";
+import Router from "next/router";
 
 // Define the props for the component
 interface ProductCardProps {
@@ -81,6 +82,31 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
         setIsSaving(false);
         setAlertType("error");
         setAlertMessage("Error adding item to cart");
+      }
+    } else {
+      setLoginModalVisible(true);
+    }
+  };
+
+  const handleAddToCartAndBuy = async () => {
+    if (isAuthenticated) {
+      const cartItem = [
+        {
+          product: product._id,
+          quantity: quantity,
+          size: selectedSize,
+          color: selectedColor,
+          price: product.price,
+        },
+      ];
+      try {
+        const res = await AddToCart(cartItem);
+        if (res.success) {
+          Router.push("/checkout");
+        }
+      } catch (error) {
+        setAlertType("error");
+        setAlertMessage("Error Buying item");
       }
     } else {
       setLoginModalVisible(true);
@@ -145,22 +171,29 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
   return (
     <section className=" container mx-auto  ">
       <div className="text-gray-700 body-font overflow-hidden bg-white mb-10 justify-center ">
+        {/* Product details */}
         <div className=" px-5 py-24 flex flex-wrap w-full">
+          {/* Product images */}
           <div className=" mx-auto flex flex-wrap justify-center ">
             <div className="flex flex-wrap lg:w-1/2 md:1/2">
               <ImageGallery images={product?.productImages} />
             </div>
+            {/* Product information */}
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+              {/* Product brand and name */}
               <h2 className="text-lg title-font text-gray-800 tracking-widest">
                 {product?.brandInfo?.brandName}
               </h2>
               <h1 className="text-gray-900  text-3xl title-font font-medium mb-1">
                 {product?.productName}
               </h1>
+              {/* Product rating and sharing */}
               <div className="flex mb-4">
+                {/* Rating */}
                 <span className="flex items-center">
                   <RatingSection rating={product.rating} />
                 </span>
+                {/* Social media sharing */}
                 <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200">
                   <a className="text-gray-500">
                     <FacebookSvg />
@@ -173,11 +206,12 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
                   </a>
                 </span>
               </div>
-
+              {/* Product price */}
               <div className="mb-6 pb-5 border-b-2 border-gray-300">
                 <span className="text-2xl text-gray-900 font-medium">
                   {product.price ? `£${product.price}` : "-"}
                 </span>
+                {/* Display discount price and percentage if available */}
                 {product.discountPrice && (
                   <div className="mt-2">
                     <span className="text-lg text-gray-500 font-medium line-through">
@@ -189,15 +223,15 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
                   </div>
                 )}
               </div>
-
+              {/* Color and size selection */}
               <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
                 {colorsDropdown()}
-
                 {sizesDropdown()}
               </div>
+              {/* Quantity selection */}
               <div className="flex flex-wrap space-x-0  mb-5">
                 <Button
-                  className="bg-ui-red"
+                  className="bg-ui-red px-5"
                   onClick={() => setQuantity(quantity - 1)}
                 >
                   {" "}
@@ -209,17 +243,19 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
                   value={quantity}
                 />
                 <Button
-                  className="bg-ui-red"
+                  className="bg-ui-red px-5"
                   onClick={() => setQuantity(quantity + 1)}
                 >
                   <PlusSvg fg="white" />
                 </Button>
               </div>
+              {/* Add to Cart and Buy Now buttons */}
               <div className="flex flex-wrap space-x-4 mb-5  ">
                 <Button
-                  className="bg-gray-700 px-14 py-3 flex hover:bg-gray-800 items-center "
+                  className="bg-gray-700 px-5 md:px-16  md:py-3 flex hover:bg-gray-800 items-center  "
                   onClick={handleAddToCart}
                 >
+                  {/* Display spinner or cart icon based on loading */}
                   {isSaving ? (
                     <div className="flex justify-center">
                       <Spinner color="text-gray" size={6} />
@@ -230,11 +266,15 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
                     </span>
                   )}
                 </Button>
-                <Button className="bg-orange-500 px-14 py-3bg-orange-500 hover:bg-orange-600  flex items-center">
+
+                <Button
+                  className="bg-orange-500 px-5 md:px-16 md:py-3  hover:bg-orange-600  flex items-center"
+                  onClick={handleAddToCartAndBuy}
+                >
                   <CardSvg fg="white" /> &nbsp; Buy Now
                 </Button>
               </div>
-
+              {/* Shipping and payment information */}
               <div className="flex  items-center pb-5  border-b-2 border-gray-200 mb-5">
                 <p className=" flex text-sm text-gray-700 mr-3 py-2 ">
                   <ShippingSvg fg="red" />
@@ -249,7 +289,7 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
                   &nbsp; Made by the Professionals
                 </p>
               </div>
-
+              {/* Display alert */}
               <div className="mt-8">
                 {isAlertVisible && (
                   <Alert
@@ -262,6 +302,7 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
         </div>
+        {/* Product description */}
         <div className="container mx-auto px-12 ">
           <div className="">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -269,6 +310,7 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
             </h1>
           </div>
           <p className="leading-relaxed text-gray-600 text-md border-gray-200 border-t-2  py-10  text-justify ">
+            {/* Product description text */}
             Fam locavore kickstarter distillery. Mixtape chillwave tumeric
             sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
             juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
@@ -277,7 +319,7 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
           </p>
         </div>
       </div>
-
+      {/* Display login modal if required */}
       {loginModalVisible && (
         <Modal isModalVisible={loginModalVisible}>
           <LoginPage onClose={() => setLoginModalVisible(!loginModalVisible)} />
@@ -287,4 +329,5 @@ const ProductDetailsCard: React.FC<ProductCardProps> = ({
   );
 };
 
+// Export the ProductDetailsCard component as the default export
 export default ProductDetailsCard;

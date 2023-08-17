@@ -96,3 +96,37 @@ export type Cart = {
   productName: string;
   productImage: string;
 };
+
+export type Address = {
+  _id: string;
+  addresses: Address[];
+  city: string;
+  postCode: string;
+  user_id: string;
+  success: boolean;
+  user: string;
+  userAddress: string;
+};
+
+export type Order = {
+  _id: string;
+  quantity: number;
+  size: string;
+  color: string;
+  price: string;
+  user_id: string;
+  success: boolean;
+  user: string;
+  orderItems: Order[];
+  productName: string;
+  productImage: string;
+  orders: Order[];
+  orderStatus: OrderStatus[];
+  items: any[];
+};
+
+export type OrderStatus = {
+  type: string;
+  isCompleted: boolean;
+  _id: string;
+};

@@ -1,11 +1,13 @@
 import axios, { AxiosResponse } from "axios";
 import {
+  Address,
   Brand,
   Carousel,
   Cart,
   Categories,
   Color,
   Login,
+  Order,
   Product,
   Size,
   User,
@@ -342,5 +344,116 @@ export const RemoveFromCart = async (productId: string): Promise<Cart> => {
   } catch (error: any) {
     console.log("Error:", error.message);
     throw new Error(error.response.data.message);
+  }
+};
+
+interface AddressProps {
+  postCode: string;
+
+  city: string;
+  user: string | undefined;
+  userAddress: string;
+}
+
+// Use a more descriptive name for the function
+export const createAddress = async (
+  postCode: string,
+  userAddress: string,
+  city: string
+): Promise<Address> => {
+  const user = Cookies.get("userID");
+
+  const body: AddressProps = {
+    postCode,
+    userAddress,
+    city,
+    user,
+  };
+
+  try {
+    const response: AxiosResponse<Address> = await axios.post(
+      `${Base_Url}/addresses`,
+      body
+    );
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseAddressAccordingToUser = () => {
+  try {
+    return useQuery<Address, Error>(["address"], async () => {
+      const user = Cookies.get("userID");
+
+      const response: AxiosResponse<Address> = await axios.get(
+        `${Base_Url}/addresses/user/${user}`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error("Error fetching user address");
+  }
+};
+
+interface OrderProps {
+  address: string;
+  items: any[]; // Change the type to match your data
+  totalAmount: number;
+  orderStatus: string;
+  payment: string[];
+  user: string;
+}
+
+export const createOrder = async (
+  items: any[], // Change the type to match your data
+  address: string,
+  payment: string[],
+
+  totalAmount: number
+): Promise<Order> => {
+  const user = Cookies.get("userID") || "";
+  const orderStatus = "ordered";
+  const body: OrderProps = {
+    items,
+    address,
+    orderStatus,
+    payment,
+    user,
+    totalAmount,
+  };
+
+  try {
+    const response: AxiosResponse<Order> = await axios.post(
+      `${Base_Url}/orders`,
+      body
+    );
+
+    return response.data; // Return the data directly
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message ||
+          "An error occurred while making the request."
+      );
+    } else {
+      throw new Error("An error occurred.");
+    }
+  }
+};
+
+export const UseOrder = () => {
+  try {
+    return useQuery<Order, Error>(["order"], async () => {
+      const user = Cookies.get("userID");
+
+      const response: AxiosResponse<Order> = await axios.get(
+        `${Base_Url}/orders/${user}`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error("Error fetching user orders");
   }
 };

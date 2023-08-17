@@ -4,7 +4,7 @@ import React from "react";
 import { Spinner } from "../Layout/Atom/atom";
 import ProductCard from "../Layout/product/productcard";
 
-export const Products = () => {
+export const AllProduct = () => {
   const productData = UseProduct();
 
   // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
@@ -34,26 +34,38 @@ export const Products = () => {
   } else {
     // Show the user data table if data is available
     windowContent = (
-      <div className="container mx-auto">
-        <div className="md:mt-10 mb-10 pt-10">
-          <div className="flex justify-between">
-            <div className="text-left ml-2 relative mb-10">
-              <h4 className="text-2xl font-semibold text-gray-800">
-                Featured Product
-              </h4>
-              <div
-                style={{ top: "1.5rem", transform: "translateY(50%)" }}
-                className="h-1 w-16 absolute bottom-0 left-0 mt-5 bg-ui-red"
-              ></div>
-            </div>
-            <div className="text-right">
-              <Link href="#">
-                <h4 className="text-lg mt-3 font-semibold text-blue-600 hover:text-blue-800">
-                  See More
-                </h4>
-              </Link>
-            </div>
+      <div className="flex flex-col md:flex-row  mt-10 py-20">
+        {/* Sidebar for filters */}
+        <div className="w-full md:w-1/4 lg:w-1/5 bg-white p-4 my-10">
+          <h2 className="text-xl font-semibold mb-4">Filter By</h2>
+          {/* Category filter */}
+          <h3 className="text-lg font-semibold mb-2">Category</h3>
+          {/* ... Category filter options go here */}
+
+          {/* Color filter */}
+          <h3 className="text-lg font-semibold mb-2 mt-4">Color</h3>
+          {/* ... Color filter options go here */}
+        </div>
+
+        {/* Main content area */}
+        <div className="w-full md:w-3/4 lg:w-4/5 p-4 mt-10 ">
+          <div className="flex items-center justify-between mb-6 ">
+            {/* Search bar */}
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-full md:w-2/5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {/* Sort dropdown */}
+            <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="featured">Featured</option>
+              <option value="price">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Rating</option>
+            </select>
           </div>
+
+          {/* Product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-2">
             {Array.isArray(allproductData?.products) &&
               allproductData?.products
@@ -83,4 +95,4 @@ export const Products = () => {
   return <>{windowContent}</>;
 };
 
-export default Products;
+export default AllProduct;

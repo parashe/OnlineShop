@@ -14,8 +14,6 @@ const ProductDetails = ({ id }: ProductCardProps) => {
   const productData = useProductDetails(productId ? productId.toString() : "");
   const allproductData = productData?.data?.products;
 
-  console.log("allproductData", allproductData);
-
   let windowContent: JSX.Element;
 
   if (!productId || productData.isLoading) {
