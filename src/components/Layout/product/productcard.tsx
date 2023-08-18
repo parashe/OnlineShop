@@ -57,7 +57,7 @@ const PriceSection = ({
     <div className="flex items-center justify-center space-x-4 ">
       {discountPrice && (
         <span className="px-3 py-1 text-xs font-semibold bg-green-500 text-white rounded-lg dark:text-green-400">
-          Save up to {discountPrice}%
+          Save {discountPrice}%
         </span>
       )}
 
@@ -83,7 +83,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       style={{ cursor: "pointer" }}
-      className="w-full  bg-white hover:shadow-md 0.5 0.5  "
+      className="w-full  bg-white hover:shadow-lg 0.5 0.5   "
     >
       {product.productImages && product.productImages.length > 0 && (
         <ProductImage imageUrl={product.productImages?.[0] || ""} />
