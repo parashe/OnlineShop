@@ -3,6 +3,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import Image from "next/image";
 import { UseCarousel } from "@/resources/resources"; // Check if the path is correct
+import { Image_Url } from "@/utils/config";
 
 const Carousels = () => {
   const [activeSlide, setActiveSlide] = useState<number>(0);
@@ -11,9 +12,14 @@ const Carousels = () => {
 
   // Use the correct condition to set allcarouselData
   const allcarouselData = React.useMemo(
-    () => (carouselData.data ? carouselData.data : []),
-    [carouselData.data]
+    () =>
+      carouselData && carouselData.data && carouselData.data.carousels
+        ? carouselData.data.carousels
+        : [],
+    [carouselData.data?.carousels]
   );
+  console.log("carouselData", carouselData);
+  console.log("allcarouselData", allcarouselData);
 
   return (
     <Carousel
@@ -30,7 +36,7 @@ const Carousels = () => {
           <Image
             width={1000}
             height={1000}
-            src={item.carouselImage}
+            src={Image_Url + item.carouselImage}
             alt={`Image ${index}`}
             className="carouselimage"
           />

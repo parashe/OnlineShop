@@ -4,7 +4,7 @@ import React from "react";
 import { Spinner } from "../Layout/Atom/atom";
 import ProductCard from "../Layout/product/productcard";
 
-export const Products = () => {
+export const OfferProducts = () => {
   const productData = UseProduct();
 
   // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
@@ -13,13 +13,10 @@ export const Products = () => {
     [productData?.data]
   );
 
-  const filterWithoutDiscountProduct =
+  const filterDiscountProduct =
     Array.isArray(allproductData?.products) &&
     allproductData?.products?.filter(
-      (product: any) =>
-        product.discountPrice === 0 ||
-        product.discountPrice === null ||
-        product.discountPrice === undefined
+      (product: any) => product.discountPrice > 0
     );
 
   // Determine the content of the window based on loading, error, or data availability
@@ -48,7 +45,7 @@ export const Products = () => {
           <div className="flex justify-between">
             <div className="text-left ml-2 relative mb-10">
               <h4 className="text-2xl font-semibold text-gray-800 uppercase">
-                Featured Product
+                Product on offer
               </h4>
               <div
                 style={{ top: "1.5rem", transform: "translateY(50%)" }}
@@ -64,8 +61,8 @@ export const Products = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:mt-5 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-2">
-            {filterWithoutDiscountProduct &&
-              filterWithoutDiscountProduct
+            {filterDiscountProduct &&
+              filterDiscountProduct
                 .slice(0, 10)
                 .map((product: any, index: number) => (
                   <Link
@@ -92,4 +89,4 @@ export const Products = () => {
   return <>{windowContent}</>;
 };
 
-export default Products;
+export default OfferProducts;

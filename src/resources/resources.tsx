@@ -6,6 +6,7 @@ import {
   Cart,
   Categories,
   Color,
+  Contact,
   Login,
   Order,
   Product,
@@ -264,36 +265,6 @@ export const updateProduct = async (
   }
 };
 
-export const UseCarousel = () => {
-  const fetchCarouselData = async () => {
-    try {
-      const carousel: Carousel[] = [
-        {
-          _id: "1",
-          title: "Title 1",
-          carouselImage: "/images/h.jpg",
-        },
-        {
-          _id: "2",
-          title: "Title 2",
-          carouselImage: "/images/hh.jpg",
-        },
-        {
-          _id: "3",
-          title: "Title 3",
-          carouselImage: "/images/home1.jpg",
-        },
-      ];
-
-      return carousel;
-    } catch (error) {
-      throw new Error("Error fetching slider data");
-    }
-  };
-
-  return useQuery<Carousel[]>(["carousel"], fetchCarouselData);
-};
-
 interface AddToCartProps {
   product: string;
   quantity: number;
@@ -456,4 +427,45 @@ export const UseOrder = () => {
   } catch (error: any) {
     throw new Error("Error fetching user orders");
   }
+};
+
+interface ContactProps {
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  message: string;
+}
+
+export const createContact = async (
+  contact: ContactProps
+): Promise<Contact> => {
+  try {
+    const response: AxiosResponse<Contact> = await axios.post(
+      `${Base_Url}/contacts`,
+      contact
+    );
+    console.log("contact", contact);
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        "An error occurred while saving the contact."
+    );
+  }
+};
+
+export const UseCarousel = () => {
+  return useQuery<Carousel>(["carousels"], async () => {
+    try {
+      const response: AxiosResponse<Carousel> = await axios.get(
+        `${Base_Url}/carousels`
+      );
+      return response.data; // Return the data directly
+    } catch (error: any) {
+      throw new Error(error.response.data.message);
+    }
+  });
 };

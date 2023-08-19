@@ -1,26 +1,37 @@
-import { Categories } from "@/Lib/types";
-import { UseCategory, UseProduct } from "@/resources/resources";
-import Link from "next/link";
-import React, { useState } from "react";
-import { Spinner } from "../Layout/Atom/atom";
-import ProductCard from "../Layout/product/productcard";
-import { ArrowRight } from "../Layout/SVG/svg";
+// Import necessary modules and components
+import { Brand, Categories } from "@/Lib/types"; // Importing Categories type
+import { UseBrand, UseCategory, UseProduct } from "@/resources/resources"; // Importing custom hooks
+import Link from "next/link"; // Importing the Link component from Next.js
+import { useRouter } from "next/router"; // Importing the router hook from Next.js
+import React, { useState } from "react"; // Importing React and useState
+import { Alert, Spinner } from "../Layout/Atom/atom"; // Importing Spinner component
+import ProductCard from "../Layout/product/productcard"; // Importing ProductCard component
 
+// Define an interface for the Category type, extending the Categories type
 interface Category extends Categories {
   parent?: Category;
 }
 
+// Define the functional component AllProduct
 export const AllProduct = () => {
-  // Data fetching
+  // Data fetching using custom hooks
   const productData = UseProduct();
+  const brandData = UseBrand();
+  const router = useRouter();
+  const categoryId = router.query.id;
+  const brandId = router.query.brandId;
 
-  // State variables
+  console.log("brandId", brandId);
+
+  // State variables using useState hook
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("featured");
   const itemsPerPage = 12;
   const [categoryData, setCategoryData] = useState<Categories | null>(null);
+  const [brand, setBrandData] = useState<Brand | null>(null);
 
+  // Fetch data using UseCategory custom hook
   const { data, isLoading, error } = UseCategory();
 
   // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
@@ -29,18 +40,21 @@ export const AllProduct = () => {
     [productData?.data]
   );
 
+  const allBrandData = React.useMemo(() => brandData?.data, [brandData?.data]);
+
+  // Calculate the total number of pages for pagination
   const totalPages = Math.ceil(
     ((Array.isArray(allproductData?.products) &&
       allproductData?.products.length) ||
       0) / itemsPerPage
   );
 
+  // Define a function to render the search bar and sort dropdown
   const renderSearchAndDrodownGrid = () => {
     return (
       <>
         <div className="md:flex items-center justify-start gap-6 mb-6">
           {/* Search bar */}
-
           <input
             type="text"
             placeholder="Search products..."
@@ -65,7 +79,9 @@ export const AllProduct = () => {
     );
   };
 
+  // Define a function to render the product grid
   const renderProductGrid = () => {
+    // Filter and sort products based on search, category, and sorting options
     const filteredProducts =
       Array.isArray(allproductData?.products) &&
       allproductData?.products.filter((product: any) => {
@@ -80,9 +96,28 @@ export const AllProduct = () => {
           return productNameMatches && categoryMatches;
         }
 
+        if (categoryId) {
+          const categoryFiltered = product.category.includes(categoryId);
+          return productNameMatches && categoryFiltered;
+        }
+
+        if (brand) {
+          const brandMatches =
+            product.brand && product.brand.includes(brand._id);
+          return productNameMatches && brandMatches;
+        }
+
+        if (brandId) {
+          const brandFiltered =
+            product.brand && product.brand.includes(brandId);
+
+          return productNameMatches && brandFiltered;
+        }
+
         return productNameMatches;
       });
 
+    // Sort and paginate filtered products
     const sortedAndPaginatedProducts =
       Array.isArray(filteredProducts) &&
       filteredProducts
@@ -98,28 +133,40 @@ export const AllProduct = () => {
         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-2">
+      <>
         {Array.isArray(sortedAndPaginatedProducts) &&
-          sortedAndPaginatedProducts.map((product: any, index: number) => (
-            <Link
-              href={{
-                pathname: "/productdetails",
-                query: {
-                  slug: product.slug,
-                  id: product._id,
-                },
-              }}
-              key={index}
-            >
-              <div className="w-full">
-                <ProductCard product={product} />
-              </div>
-            </Link>
-          ))}
-      </div>
+        sortedAndPaginatedProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-2">
+            {sortedAndPaginatedProducts.map((product: any, index: number) => (
+              <Link
+                href={{
+                  pathname: "/productdetails",
+                  query: {
+                    slug: product.slug,
+                    id: product._id,
+                  },
+                }}
+                key={index}
+              >
+                <div className="w-full">
+                  <ProductCard product={product} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="w-full py-10">
+            <Alert
+              type="error"
+              message="Sorry, unable to find the product you are looking for"
+            />
+          </div>
+        )}
+      </>
     );
   };
 
+  // Define a function to organize categories into a hierarchical structure
   const organizeCategories = (categories: Category[]): Category[] => {
     const categoriesMap: Record<string, Category> = {};
     const rootCategories: Categories[] = [];
@@ -146,6 +193,7 @@ export const AllProduct = () => {
     return rootCategories;
   };
 
+  // Define a function to render a category and its child categories
   const renderCategory = (category: Categories) => (
     <div key={category._id} className="my-4">
       <div className="">
@@ -175,22 +223,41 @@ export const AllProduct = () => {
     </div>
   );
 
-  // Window content rendering
+  const rendBrands = () => {
+    return (
+      allBrandData &&
+      allBrandData.brands.map((brand: any) => {
+        return (
+          <div key={brand._id} className=" md:px-5 py-3 ">
+            <li
+              onClick={() => setBrandData(brand)}
+              style={{ listStyleType: "none" }}
+              className="pb-3 cursor-pointer list-style-type: none;  text-gray-500 font-medium  hover:text-blue-500 border-b-2 border-gray-300 border-dashed  "
+            >
+              {brand.brandName}
+            </li>
+          </div>
+        );
+      })
+    );
+  };
+
+  // Define the content to be rendered based on data loading and availability
   let windowContent = <></>;
 
-  if (productData.isLoading) {
+  if (productData.isLoading || isLoading || brandData.isLoading) {
     // Show loading spinner
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-opacity-40 z-[100]">
         <Spinner size={16} color="text-light-200" />
       </div>
     );
-  } else if (productData.error || !allproductData) {
+  } else if (productData.error || !allproductData || error || !allBrandData) {
     // Show error message if data is not available
     windowContent = (
-      <div className="container">
-        <div className="flex w-full justify-center">
-          <p className="text-ui-red">Network Error or Data not available</p>
+      <div className="container mx-auto">
+        <div className=" w-full justify-center text-center">
+          <Alert type="error" message="Network Error or Data not available" />
         </div>
       </div>
     );
@@ -212,6 +279,18 @@ export const AllProduct = () => {
           {organizeCategories(
             data && data.categories ? data.categories : []
           ).map(renderCategory)}
+
+          <div className="text-left relative pb-2  border-b-2 mb-10">
+            <h4
+              className="text-2xl dark:bg-gray-200 text-gray-800"
+              style={{ fontWeight: 900 }}
+            >
+              <span className="bg-gradient-to-r from-ui-red to-purple-600 text-transparent bg-clip-text  ">
+                Brands
+              </span>
+            </h4>
+          </div>
+          {rendBrands()}
         </div>
 
         {/* Main content area */}

@@ -83,7 +83,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       style={{ cursor: "pointer" }}
-      className="w-full  bg-white hover:shadow-lg 0.5 0.5   "
+      className="w-full  bg-white hover:shadow-lg transition duration-300   "
     >
       {product.productImages && product.productImages.length > 0 && (
         <ProductImage imageUrl={product.productImages?.[0] || ""} />

@@ -1,10 +1,15 @@
+import { Product } from "@/Lib/types";
 import { UseProduct } from "@/resources/resources";
 import Link from "next/link";
 import React from "react";
-import { Spinner } from "../Layout/Atom/atom";
+import { Alert, Spinner } from "../Layout/Atom/atom";
 import ProductCard from "../Layout/product/productcard";
 
-export const Products = () => {
+interface RelatedProductCardProps {
+  id: string;
+}
+
+export const RelatedProduct = ({ id }: RelatedProductCardProps) => {
   const productData = UseProduct();
 
   // Extract user data from the hook response using useMemo to prevent unnecessary re-renders
@@ -13,22 +18,37 @@ export const Products = () => {
     [productData?.data]
   );
 
-  const filterWithoutDiscountProduct =
+  // Find the product with the given ID
+  const productWithID =
+    Array.isArray(allproductData?.products) &&
+    allproductData?.products?.find((product: Product) => product._id === id);
+
+  // Extract the category ID from the product if found
+  const categoryID = productWithID?.category;
+
+  // Filter products in the same category as the one with the given ID
+  const relatedProducts =
     Array.isArray(allproductData?.products) &&
     allproductData?.products?.filter(
-      (product: any) =>
-        product.discountPrice === 0 ||
-        product.discountPrice === null ||
-        product.discountPrice === undefined
+      (product: Product) => product.category === categoryID
     );
 
   // Determine the content of the window based on loading, error, or data availability
   let windowContent = <></>;
+
   if (productData.isLoading) {
     // Show a spinner if data is still loading
     windowContent = (
-      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center  bg-opacity-40 z-[100]">
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-opacity-40 z-[100]">
         <Spinner size={16} color="text-light-200" />
+      </div>
+    );
+  } else if (!id) {
+    windowContent = (
+      <div className="container mx-auto">
+        <div className="w-full justify-center">
+          <Alert type="error" message="Sorry cannot fetch related product" />
+        </div>
       </div>
     );
   } else if (productData.error || !allproductData) {
@@ -41,14 +61,14 @@ export const Products = () => {
       </div>
     );
   } else {
-    // Show the user data table if data is available
+    // Show the related products if data is available
     windowContent = (
       <div className="container mx-auto">
         <div className="md:mt-10 mb-10 pt-10">
           <div className="flex justify-between">
             <div className="text-left ml-2 relative mb-10">
               <h4 className="text-2xl font-semibold text-gray-800 uppercase">
-                Featured Product
+                Related Product
               </h4>
               <div
                 style={{ top: "1.5rem", transform: "translateY(50%)" }}
@@ -64,8 +84,8 @@ export const Products = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:mt-5 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-2">
-            {filterWithoutDiscountProduct &&
-              filterWithoutDiscountProduct
+            {relatedProducts &&
+              relatedProducts
                 .slice(0, 10)
                 .map((product: any, index: number) => (
                   <Link
@@ -92,4 +112,4 @@ export const Products = () => {
   return <>{windowContent}</>;
 };
 
-export default Products;
+export default RelatedProduct;

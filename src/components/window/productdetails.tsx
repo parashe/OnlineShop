@@ -32,7 +32,7 @@ const ProductDetails = ({ id }: ProductCardProps) => {
     );
   } else {
     windowContent = (
-      <div className="md:mt-12 md:pt-12">
+      <div className="mt-10 ">
         <ProductDetailsCard product={allproductData} />
       </div>
     );

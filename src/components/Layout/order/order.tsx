@@ -15,7 +15,6 @@ const OrderLayout: React.FC<OrderProps> = ({
 
   orderStatus,
 }) => {
-  console.log(items);
   return (
     <div className="w-full  bg-white md:py-10 md:px-10  m-0  ">
       {items.map((item: any, index: number) => (

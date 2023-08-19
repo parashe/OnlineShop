@@ -71,7 +71,7 @@ export const Input: React.FC<InputProps> = ({
         htmlFor="password"
       >
         {label} &nbsp;
-        {required ? <span className="text-red-500">*</span> : null}
+        {required ? <span className="text-ui-red">*</span> : null}
       </label>
       <input
         className={finalClassName}
@@ -128,7 +128,7 @@ export const TextAreaInput: React.FC<TextAreaInputProps> = ({
         htmlFor="password"
       >
         {label} &nbsp;
-        {required ? <span className="text-red-500">*</span> : null}
+        {required ? <span className="text-ui-red">*</span> : null}
       </label>
       <textarea
         className={finalClassName}

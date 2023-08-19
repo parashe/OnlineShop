@@ -1,11 +1,12 @@
-"use client";
 import { useState, useEffect } from "react";
-import { Spinner } from "@/components/Layout/Atom/atom";
-import { Breadcrumb } from "@/components/Layout/BreadCrumb/breadcrumb";
 import Navbar from "@/components/Layout/Navbar/Navbar";
+import { About } from "@/components/window/about";
+import { Contact } from "@/components/window/contact";
+import Testimonial from "@/components/window/testomonial";
+import { Spinner } from "@/components/Layout/Atom/atom";
 import Footer from "@/components/window/footer";
-import OfferProducts from "@/components/window/offerproduct";
-import ShoppingCart from "@/components/window/shoppingcart";
+import WhyWeSection from "@/components/window/whywe";
+import { Breadcrumb } from "@/components/Layout/BreadCrumb/breadcrumb";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,11 +29,14 @@ const Home = () => {
           <Spinner size={16} color="text-light-200" />
         </div>
       ) : (
+        // Once isLoading is false, render the actual content
         <>
           <Navbar />
-          <Breadcrumb title="Shopping Cart" />
-          <ShoppingCart />
-          <OfferProducts />
+          <Breadcrumb title="About" />
+
+          <About />
+          <WhyWeSection />
+          <Testimonial />
           <Footer />
         </>
       )}

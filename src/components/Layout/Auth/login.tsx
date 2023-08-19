@@ -8,6 +8,8 @@ import { loginUser } from "@/resources/resources";
 import { Alert, Button, Input, Spinner } from "../Atom/atom";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import Modal from "../Modal/Modal";
+import SignUp from "./signup";
 
 // Define the type for props that the login component receives
 type UserModalDetailsProps = {
@@ -44,6 +46,7 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
 
   // State variable to manage the loading state while checking authentication
   const [loading, setLoading] = useState(true);
+  const [showsinUp, setShowsinUp] = useState(false);
 
   // Router instance to handle page routing
   const router = useRouter();
@@ -234,6 +237,7 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
                   <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
                     Don’t have an account yet?{" "}
                     <a
+                      onClick={() => setShowsinUp(true)}
                       href="#"
                       className="font-medium text-ui-red hover:underline dark:text-primary-500"
                     >
@@ -245,6 +249,15 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
             </div>
           </div>
         </div>
+        {showsinUp && (
+          <Modal isModalVisible={showsinUp}>
+            {SignUp({
+              onClose: () => {
+                setShowsinUp(!showsinUp);
+              },
+            })}
+          </Modal>
+        )}
       </div>
     </>
   );

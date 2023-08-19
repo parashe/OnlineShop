@@ -102,3 +102,30 @@ body {
   top: calc(50% - 1.25em);
   left: calc(50% - 1.25em);
 }
+
+/* Define custom CSS styles for the marker */
+.custom-marker {
+  width: 30px; /* Width of the marker */
+  height: 30px; /* Height of the marker */
+  background-color: red; /* Red background color */
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* Add pointer cursor on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional box shadow */
+  font-weight: bold;
+  color: #fff; /* White text color */
+}
+
+.react-multiple-carousel__arrow {
+  background-color: red !important;
+}
+.react-multiple-carousel__arrow:hover {
+  /* background: rgba(0,0,0,0.8); */
+  background: rgb(239, 85, 85) !important;
+}
+/* Define custom CSS styles for the icon content */
+.custom-marker .custom-icon {
+  padding: 5px; /* Adjust padding as needed */
+}

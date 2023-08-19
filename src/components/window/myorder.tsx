@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Alert, Spinner } from "../Layout/Atom/atom";
 import OrderLayout from "../Layout/order/order";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 export const MyOrders = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -59,9 +60,9 @@ export const MyOrders = () => {
   } else {
     // Show the user data table if data is available
     windowContent = (
-      <div className="container mx-auto w-full px-2 md:mt-14 ">
-        <div className="flex my-10  flex-col md:flex-row">
-          <div className=" sm:w-full w-full md:w-full px-8 py-10 mr-0 md:my-10 my-3   bg-white">
+      <div className="container mx-auto w-full px-2 mt-10 ">
+        <div className="flex   flex-col md:flex-row">
+          <div className=" sm:w-full w-full md:w-full px-8 py-10 mr-0  my-3   bg-white">
             <div className=" justify-between border-b-2 border-gray-100 md:pb-8 pb-3 ">
               <h1 className="font-semibold text-2xl">My Orders</h1>
             </div>
@@ -90,8 +91,8 @@ export const MyOrders = () => {
                 orderStatus={item.orderStatus}
               />
             ))}
-            <a
-              href="#"
+            <Link
+              href="product"
               className="flex font-semibold text-blue-500 text-sm mt-10 hover:text-blue-700"
             >
               <svg
@@ -101,7 +102,7 @@ export const MyOrders = () => {
                 <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
               </svg>
               Continue Shopping
-            </a>
+            </Link>
           </div>
         </div>
       </div>

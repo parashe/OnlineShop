@@ -52,6 +52,7 @@ export type Brand = {
   _id: string;
   brandName: string;
   brands: Brand[];
+  brandImage: string;
 };
 
 export type Product = {
@@ -73,13 +74,6 @@ export type Product = {
   categoryInfo: Categories;
   colorsInfo: Color;
   sizesInfo: Size;
-};
-
-export type Carousel = {
-  _id: string;
-  carouselImage: string;
-  title: string;
-  alt?: string;
 };
 
 export type Cart = {
@@ -129,4 +123,19 @@ export type OrderStatus = {
   type: string;
   isCompleted: boolean;
   _id: string;
+};
+
+export type Contact = {
+  _id: string;
+  fullName: string;
+  email: string;
+  message: string;
+  createdAt: string;
+};
+
+export type Carousel = {
+  _id: string;
+  carouselImage: string;
+  carouselName: string;
+  carousels: Carousel[];
 };
