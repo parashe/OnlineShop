@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useRef } from "react";
@@ -10,6 +11,9 @@ const Sidebar = () => {
     setActiveDropdown((prev) => (prev === dropdownId ? null : dropdownId));
   };
   const router = useRouter();
+
+  const { logout } = useAuth();
+
   return (
     <>
       <div>
@@ -119,16 +123,125 @@ const Sidebar = () => {
                   }`}
                 >
                   <svg
-                    className="w-3.5 h-3.5"
                     xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
+                    height="1em"
                     fill="red"
-                    viewBox="0 0 16 16"
+                    viewBox="0 0 512 512"
                   >
-                    <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"></path>
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
                   </svg>
                   Category
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="orders"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/orders" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    fill="red"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
+                  </svg>
+                  Orders Recieved
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/size"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/size" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 512 512"
+                  >
+                    <path
+                      fill="red"
+                      d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64h96v80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64z"
+                    />
+                  </svg>
+                  Messages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="brand"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/brand" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    fill="red"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
+                  </svg>
+                  Brand
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/size"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/size" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    fill="red"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
+                  </svg>
+                  Sizes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/color"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/color" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    fill="red"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
+                  </svg>
+                  Color
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="carousel"
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                    router.pathname === "/carousel" ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    fill="red"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2zM504 256c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8z" />
+                  </svg>
+                  Carousel
                 </Link>
               </li>
               <li>
@@ -155,7 +268,7 @@ const Sidebar = () => {
               <li className="hs-accordion" id="users-accordion">
                 <Link
                   className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
-                  href="/user"
+                  href="#"
                   onClick={() => toggleDropdown("users-accordion")}
                 >
                   <svg
@@ -168,7 +281,7 @@ const Sidebar = () => {
                   >
                     <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"></path>
                   </svg>
-                  Users
+                  Account
                   <svg
                     className="hs-accordion-active:block ml-auto hidden w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
                     width="16"
@@ -212,42 +325,19 @@ const Sidebar = () => {
                     data-hs-accordion-always-open
                   >
                     <li className="hs-accordion" id="users-accordion-sub-1">
-                      <Link
+                      <a
+                        onClick={logout}
                         className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                         href="javascript:;"
                       >
-                        Sub Menu 1
-                      </Link>
-                    </li>
-                    <li className="hs-accordion" id="users-accordion-sub-2">
-                      <Link
-                        className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
-                        href="javascript:;"
-                      >
-                        Sub Menu 2
-                      </Link>
-                    </li>
-                    <li className="hs-accordion" id="users-accordion-sub-2">
-                      <Link
-                        className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
-                        href="javascript:;"
-                      >
-                        Sub Menu 2
-                      </Link>
-                    </li>
-                    <li className="hs-accordion" id="users-accordion-sub-2">
-                      <Link
-                        className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
-                        href="javascript:;"
-                      >
-                        Sub Menu 2
-                      </Link>
+                        Logout
+                      </a>
                     </li>
                   </ul>
                 </div>
               </li>
 
-              <li className="hs-accordion" id="account-accordion">
+              {/* <li className="hs-accordion" id="account-accordion">
                 <Link
                   className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                   href="javascript:;"
@@ -330,9 +420,9 @@ const Sidebar = () => {
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li> */}
 
-              <li className="hs-accordion" id="projects-accordion">
+              {/* <li className="hs-accordion" id="projects-accordion">
                 <Link
                   className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                   href="javascript:;"
@@ -412,9 +502,9 @@ const Sidebar = () => {
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li> */}
 
-              <li>
+              {/* <li>
                 <Link
                   className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300"
                   href="javascript:;"
@@ -432,8 +522,8 @@ const Sidebar = () => {
                   </svg>
                   Calendar
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link
                   className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300"
                   href="javascript:;"
@@ -450,7 +540,7 @@ const Sidebar = () => {
                   </svg>
                   Documentation
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </nav>
         </div>

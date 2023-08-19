@@ -174,6 +174,7 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
   );
 };
 
+
 const organizeCategories = (categories: Category[]): Category[] => {
   const categoriesMap: Record<string, Category> = {};
   const rootCategories: Category[] = [];
@@ -223,7 +224,6 @@ const CategoryModalDetails = ({
   } | null>(null);
 
   const handleChangecategoryName = (value: string) => {
-    console.log("value", value);
     setcategoryName(value);
     setcategoryName_ErrorMsg("");
   };
@@ -251,11 +251,6 @@ const CategoryModalDetails = ({
           formData.append("categoryImage", selectedImage);
           formData.append("categoryName", categoryName);
           formData.append("parentCategory", parentCategoryId);
-
-          // Log the formData using `entries()`
-          // for (const pair of formData.entries()) {
-          //   console.log(pair[0], pair[1]);
-          // }
 
           // Call the "createUser" function to insert user data into the database
           const res = await createCategory(formData);
@@ -312,8 +307,6 @@ const CategoryModalDetails = ({
     label: string;
     value: number | string;
   }) => {
-    console.log("selected category name:", selectedItem.label);
-    console.log("selected category ID:", selectedItem.value);
     setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.
     // Now you have access to both the selected category name and ID, and you can use them as required.
   };
@@ -483,11 +476,6 @@ const CategoryEditModalDetails = ({
           formData.append("categoryName", categoryName);
           formData.append("parentCategory", parentCategoryId);
 
-          // Log the formData using `entries()`
-          // for (const pair of formData.entries()) {
-          //   console.log(pair[0], pair[1]);
-          // }
-
           // Call the "createUser" function to insert user data into the database
           const res = await updateCategory(data._id, formData);
 
@@ -566,8 +554,6 @@ const CategoryEditModalDetails = ({
     label: string;
     value: number | string;
   }) => {
-    console.log("selected category name:", selectedItem.label);
-    console.log("selected category ID:", selectedItem.value);
     setSelectedParentCategory(selectedItem); // You can also set the selected category name if needed.
     // Now you have access to both the selected category name and ID, and you can use them as required.
   };

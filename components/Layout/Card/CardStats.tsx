@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 interface CardStatsProps {
   statSubtitle: string;
-  statTitle: string;
+  statTitle: string | number;
   statArrow: string;
   statPercent: string;
   statPercentColor: string;

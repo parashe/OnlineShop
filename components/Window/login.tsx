@@ -70,7 +70,6 @@ const LoginPage: React.FC = () => {
 
         // Call the loginUser function to perform the actual login
         const loginResponse = await loginUser(email, password);
-        console.log(loginResponse);
 
         // If login is successful and tokens are received
         if (loginResponse.accessToken) {

@@ -1,9 +1,13 @@
 import axios, { AxiosResponse } from "axios";
 import {
+  Address,
   Brand,
+  Carousel,
   Categories,
   Color,
+  Contact,
   Login,
+  Order,
   Product,
   Size,
   User,
@@ -196,46 +200,6 @@ export const deleteCategory = async (categoryId: number) => {
   }
 };
 
-export const UseColor = () => {
-  try {
-    return useQuery<Color>(["color"], async () => {
-      const response: AxiosResponse<Color> = await axios.get(
-        `${Base_Url}/colors`
-      );
-      console.log("response", response);
-      return response.data; // Return the data directly
-    });
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
-
-export const UseSize = () => {
-  try {
-    return useQuery<Size>(["sizes"], async () => {
-      const response: AxiosResponse<Size> = await axios.get(
-        `${Base_Url}/sizes`
-      );
-      return response.data; // Return the data directly
-    });
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
-
-export const UseBrand = () => {
-  try {
-    return useQuery<Brand>(["brand"], async () => {
-      const response: AxiosResponse<Brand> = await axios.get(
-        `${Base_Url}/brands`
-      );
-      return response.data; // Return the data directly
-    });
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-};
-
 export const UseProduct = () => {
   try {
     return useQuery<Product>(["product"], async () => {
@@ -277,5 +241,247 @@ export const updateProduct = async (
     return response.data; // Return the data directly
   } catch (error: any) {
     throw new Error(error.response.data.message);
+  }
+};
+export const UseBrand = () => {
+  try {
+    return useQuery<Brand>(["brand"], async () => {
+      const response: AxiosResponse<Brand> = await axios.get(
+        `${Base_Url}/brands`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+export const createBrand = async (formData: FormData): Promise<Brand> => {
+  try {
+    const response: AxiosResponse<Brand> = await axios.post(
+      `${Base_Url}/brands`,
+      formData
+    );
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateBrand = async (
+  formData: FormData,
+  id: string
+): Promise<Brand> => {
+  try {
+    const response: AxiosResponse<Brand> = await axios.put(
+      `${Base_Url}/brands/${id}`,
+      formData
+    );
+
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const useCarousel = () => {
+  return useQuery<Carousel>(["carousels"], async () => {
+    try {
+      const response: AxiosResponse<Carousel> = await axios.get(
+        `${Base_Url}/carousels`
+      );
+      return response.data; // Return the data directly
+    } catch (error: any) {
+      throw new Error(error.response.data.message);
+    }
+  });
+};
+export const createCarousel = async (formData: FormData): Promise<Carousel> => {
+  try {
+    const response: AxiosResponse<Carousel> = await axios.post(
+      `${Base_Url}/carousels`,
+      formData
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateCarousel = async (
+  formData: FormData,
+  id: string
+): Promise<Carousel> => {
+  try {
+    const response: AxiosResponse<Carousel> = await axios.put(
+      `${Base_Url}/carousels/${id}`,
+      formData
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const deleteCarousel = async (id: string): Promise<Carousel> => {
+  try {
+    const response: AxiosResponse<Carousel> = await axios.delete(
+      `${Base_Url}/carousels/${id}`
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseSize = () => {
+  try {
+    return useQuery<Size>(["sizes"], async () => {
+      const response: AxiosResponse<Size> = await axios.get(
+        `${Base_Url}/sizes`
+      );
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const createSize = async (size: string): Promise<Size> => {
+  try {
+    const body = {
+      sizeName: size,
+    };
+    const response: AxiosResponse<Size> = await axios.post(
+      `${Base_Url}/sizes`,
+      body
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateSize = async (size: string, id: string): Promise<Size> => {
+  try {
+    const body = {
+      sizeName: size,
+    };
+
+    const response: AxiosResponse<Size> = await axios.put(
+      `${Base_Url}/sizes/${id}`,
+      body
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const deleteSize = async (id: string): Promise<Size> => {
+  try {
+    const response: AxiosResponse<Size> = await axios.delete(
+      `${Base_Url}/sizes/${id}`
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseColor = () => {
+  try {
+    return useQuery<Color>(["color"], async () => {
+      const response: AxiosResponse<Color> = await axios.get(
+        `${Base_Url}/colors`
+      );
+      console.log("response", response);
+      return response.data; // Return the data directly
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const createColor = async (color: string): Promise<Color> => {
+  try {
+    const body = {
+      colorName: color,
+    };
+    const response: AxiosResponse<Color> = await axios.post(
+      `${Base_Url}/colors`,
+      body
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updateColor = async (
+  color: string,
+  id: string
+): Promise<Color> => {
+  try {
+    const body = {
+      colorName: color,
+    };
+
+    const response: AxiosResponse<Color> = await axios.put(
+      `${Base_Url}/colors/${id}`,
+      body
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+export const deleteColor = async (id: string): Promise<Color> => {
+  try {
+    const response: AxiosResponse<Color> = await axios.delete(
+      `${Base_Url}/colors/${id}`
+    );
+    return response.data; // Return the data directly
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const UseOrder = () => {
+  try {
+    return useQuery<Order, Error>(["order"], async () => {
+      const response: AxiosResponse<Order> = await axios.get(
+        `${Base_Url}/orders`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error("Error fetching user orders");
+  }
+};
+
+export const UseAddress = () => {
+  try {
+    return useQuery<Address, Error>(["address"], async () => {
+      const response: AxiosResponse<Address> = await axios.get(
+        `${Base_Url}/addresses`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error("Error fetching user address");
+  }
+};
+
+export const UseMessage = () => {
+  try {
+    return useQuery<Contact, Error>(["order"], async () => {
+      const response: AxiosResponse<Contact> = await axios.get(
+        `${Base_Url}/contacts`
+      );
+      return response.data;
+    });
+  } catch (error: any) {
+    throw new Error("Error fetching user orders");
   }
 };

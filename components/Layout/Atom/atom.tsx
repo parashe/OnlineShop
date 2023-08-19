@@ -668,7 +668,7 @@ export const InputFile: React.FC<InputFileProps> = ({
       </div>
 
       {errorMessage && (
-        <p className="text-red-500 text-xs italic">{errorMessage}</p>
+        <p className="text-ui-red text-xs italic">{errorMessage}</p>
       )}
     </>
   );

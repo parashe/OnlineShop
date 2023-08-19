@@ -35,7 +35,6 @@ const User = () => {
     setIsModalVisible((prevIsModalVisible) => !prevIsModalVisible);
   };
   const handlemodalEditClick = (item: User) => {
-    console.log("item", item);
     setModalData(item);
     setShowModal(true);
   };

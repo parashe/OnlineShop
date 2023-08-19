@@ -3,7 +3,8 @@ import { useAuth } from "context/AuthContext";
 import React, { useEffect } from "react";
 import withAuth from "utils/withAuth";
 import Cookies from "js-cookie";
-import Dashboard from "@/components/Window/dashboard";
+import DashboardSection from "@/components/Window/Dashboard";
+
 const DashboardPage = () => {
   const { isAuthenticated, userRole, setIsAuthenticated, setUserRole } =
     useAuth();
@@ -42,7 +43,7 @@ const DashboardPage = () => {
 
   return (
     <Layout>
-      <Dashboard />
+      <DashboardSection />
     </Layout>
   );
 };
