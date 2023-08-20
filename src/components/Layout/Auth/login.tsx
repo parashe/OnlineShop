@@ -4,12 +4,14 @@ import { useRouter } from "next/router"; // Import router for navigation
 import Cookies from "js-cookie"; // Import Cookies library for managing cookies
 
 // Import necessary components and context
-import { loginUser } from "@/resources/resources";
+import { loginUser, ResetPassword } from "@/resources/resources";
 import { Alert, Button, Input, Spinner } from "../Atom/atom";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Modal from "../Modal/Modal";
 import SignUp from "./signup";
+import ChangePassword from "./changepassword";
+import ForgetPassword from "./forgetpassword";
 
 // Define the type for props that the login component receives
 type UserModalDetailsProps = {
@@ -40,6 +42,8 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
 
   // State variable to indicate whether the form is currently being saved
   const [isSaving, setIsSaving] = useState(false);
+
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Accessing authentication-related context using the useAuth hook
   const { setIsAuthenticated } = useAuth();
@@ -95,8 +99,10 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
       setAlertType("error");
       setAlertMessage("Invalid email or password");
       setIsAlertVisible(true);
+      setIsSaving(false);
     } finally {
       setLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -206,6 +212,7 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
                       </div>
                     </div>
                     <a
+                      onClick={() => setShowChangePassword(true)}
                       href="#"
                       className="text-sm font-medium text-blue-500 hover:underline dark:text-primary-500"
                     >
@@ -249,13 +256,17 @@ const LoginPage = ({ onClose }: UserModalDetailsProps) => {
             </div>
           </div>
         </div>
+
+        {showChangePassword && (
+          <Modal isModalVisible={showChangePassword}>
+            <ForgetPassword onClose={() => setShowChangePassword(false)} />
+          </Modal>
+        )}
+
         {showsinUp && (
           <Modal isModalVisible={showsinUp}>
-            {SignUp({
-              onClose: () => {
-                setShowsinUp(!showsinUp);
-              },
-            })}
+            {/* Render the SignUp component directly */}
+            <SignUp onClose={() => setShowsinUp(false)} />
           </Modal>
         )}
       </div>

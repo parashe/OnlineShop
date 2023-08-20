@@ -469,3 +469,72 @@ export const UseCarousel = () => {
     }
   });
 };
+interface ChangePasswordProps {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export const changePassword = async (
+  oldPassword: string,
+  newPassword: string
+): Promise<ChangePasswordProps> => {
+  try {
+    // Define the request body with oldPassword and newPassword
+    const requestBody = {
+      currentPassword: oldPassword,
+      newPassword: newPassword,
+    };
+
+    const id = Cookies.get("userID");
+
+    // Make a POST request to change the password
+    const response: AxiosResponse<ChangePasswordProps> = await axios.put(
+      `${Base_Url}/users/changepassword/${id}`,
+      requestBody
+    );
+
+    return response.data;
+
+    // Password changed successfully
+  } catch (error: any) {
+    // Handle errors here
+    throw new Error(
+      error.response?.data?.message ||
+        "An error occurred while changing the password."
+    );
+  }
+};
+
+interface ResetPasswordProps {
+  email: string;
+}
+
+export const ResetPassword = async (
+  email: string
+): Promise<ResetPasswordProps> => {
+  try {
+    // Define the request body with oldPassword and newPassword
+    const requestBody = {
+      email: email,
+    };
+    console.log("requestBody", requestBody);
+
+    const id = Cookies.get("userID");
+
+    // Make a POST request to change the password
+    const response: AxiosResponse<ResetPasswordProps> = await axios.post(
+      `${Base_Url}/request-password-reset`,
+      requestBody
+    );
+
+    return response.data;
+
+    // Password changed successfully
+  } catch (error: any) {
+    // Handle errors here
+    throw new Error(
+      error.response?.data?.message ||
+        "An error occurred while reseting  the password."
+    );
+  }
+};

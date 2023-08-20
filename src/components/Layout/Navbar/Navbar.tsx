@@ -1,15 +1,17 @@
-import { UseCategory } from "@/resources/resources";
+import { UseCategory, UseProduct } from "@/resources/resources";
 import Image from "next/image";
-import React from "react";
-import { Button, Spinner } from "../Atom/atom";
+import React, { useState } from "react";
+import { Spinner } from "../Atom/atom";
 import Modal from "../Modal/Modal";
-import { Cart, SearchButton, UserSvg } from "../SVG/svg";
+import { SearchButton, UserSvg } from "../SVG/svg";
 import { Categories } from "@/Lib/types";
 import SignUp from "../Auth/signup";
 import LoginPage from "../Auth/login";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
 import Link from "next/link";
+import ChangePassword from "../Auth/changepassword";
+import SearchModalsFunctions from "../Search/search";
 const Navbar = () => {
   const [isSearchModalVisible, setisSearchModalVisible] = React.useState(false);
   const [showcategory, setshowcategory] = React.useState(false);
@@ -17,6 +19,7 @@ const Navbar = () => {
   const [singupModalVisible, setSingupModalVisible] = React.useState(false);
   const [loginModalVisible, setLoginModalVisible] = React.useState(false);
   const [showuserDropdown, setshowuserDropdown] = React.useState(false);
+  const [showChangePassword, setShowChangePassword] = React.useState(false);
 
   const { data, isLoading, error } = UseCategory();
 
@@ -95,6 +98,15 @@ const Navbar = () => {
                     My Orders
                   </Link>
                 </li>
+                <li>
+                  <a
+                    onClick={() => setShowChangePassword(true)}
+                    href="#"
+                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
+                  >
+                    Change Password
+                  </a>
+                </li>
               </ul>
               <div className="py-1">
                 <a
@@ -106,6 +118,12 @@ const Navbar = () => {
                 </a>
               </div>
             </div>
+          )}
+
+          {showChangePassword && (
+            <Modal isModalVisible={showChangePassword}>
+              <ChangePassword onClose={() => setShowChangePassword(false)} />
+            </Modal>
           )}
         </div>
       </>
@@ -281,11 +299,11 @@ const Navbar = () => {
 
         {isSearchModalVisible && (
           <Modal isModalVisible={isSearchModalVisible}>
-            {searchModalsFunctions({
-              onClose: () => {
+            <SearchModalsFunctions
+              onClose={() => {
                 setisSearchModalVisible(!isSearchModalVisible);
-              },
-            })}
+              }}
+            />
           </Modal>
         )}
 
@@ -318,147 +336,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-interface searchModalsFunctionsProps {
-  onClose: () => void;
-}
-
-const searchModalsFunctions = ({ onClose }: searchModalsFunctionsProps) => {
-  return (
-    <>
-      <div className="relative top-0 bg-white rounded-lg shadow dark:bg-gray-500 md:w-[1000px]  w-full ">
-        <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600 ">
-          <h3 className="md:px-10 text-xl font-semibold text-gray-900 dark:text-white">
-            Search
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            <svg
-              className="w-3 h-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-              />
-            </svg>
-            <span className="sr-only">Close modal</span>
-          </button>
-        </div>
-
-        <div className="container mx-auto md:p-12 md:pt-8 w-full md:pb-10 bg-gray-100 ">
-          <div className="md:max-w-[1300px] md:p-6 bg-white pb-10 pt-10 md:pb-16 md:pt-16">
-            <form>
-              <div className="md:flex">
-                <button
-                  id="dropdown-button"
-                  data-dropdown-toggle="dropdown"
-                  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-                  type="button"
-                >
-                  All categories{" "}
-                  <svg
-                    className="w-2.5 h-2.5 ml-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="dropdown"
-                  className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                >
-                  <ul
-                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdown-button"
-                  >
-                    <li>
-                      <button
-                        type="button"
-                        className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Mockups
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Templates
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Design
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Logos
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-                <div className="relative w-full">
-                  <input
-                    type="search"
-                    id="search-dropdown"
-                    className="block p-4 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border  border-gray-400 focus:ring-blue-500  focus:border-blue-500    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                    placeholder="Search for products"
-                    required
-                  />
-                  <Button className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                    <span className="sr-only">Search</span>
-                  </Button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
 
 interface CategoryListProps {
   allcategorydata: Categories[];
