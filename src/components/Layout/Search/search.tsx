@@ -17,7 +17,10 @@ const SearchModalsFunctions: React.FC<SearchModalsFunctionsProps> = ({
   const productData = UseProduct();
 
   const allProductData = useMemo(
-    () => (productData && productData.data.products) || [],
+    () =>
+      Array.isArray(productData?.data?.products)
+        ? productData.data?.products
+        : [],
     [productData?.data?.products]
   );
 
@@ -26,10 +29,12 @@ const SearchModalsFunctions: React.FC<SearchModalsFunctionsProps> = ({
       setSearchResults([]);
       setShowResults(false); // Hide results when the search query is empty
     } else {
-      const filteredResults = allProductData.filter((product: any) =>
-        product.productName.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setSearchResults(filteredResults);
+      const filteredResults =
+        Array.isArray(allProductData) &&
+        allProductData.filter((product: any) =>
+          product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      setSearchResults(filteredResults || []);
       setShowResults(true); // Show results when there is a search query
     }
   }, [searchQuery, allProductData]);
