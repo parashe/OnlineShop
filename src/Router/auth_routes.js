@@ -25,7 +25,7 @@ router.post(
 
 router.post("/api/auth/signin", controller.signin);
 
-router.put("/api/users/:id/changePassword", controller.changePassword);
+router.put("/api/users/changepassword/:id", controller.changePassword);
 
 router.put("/api/users/:id", multerUpload("profileImage"), updateUser);
 router.delete("/api/users/:id", userDetails.delete_User);

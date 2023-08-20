@@ -293,9 +293,6 @@ exports.updateProduct = async (req, res) => {
 
     const productId = req.params.id;
 
-    console.log(req.files);
-    console.log(req.body);
-
     // Check if the required fields are present in the request body
     if (!productName || !category || !price || !stockQuantity) {
       return res.status(400).json({

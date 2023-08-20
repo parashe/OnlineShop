@@ -137,7 +137,9 @@ exports.changePassword = async (req, res) => {
     // Save the updated user document in the database
     await user.save();
 
-    res.status(200).json({ message: "Password changed successfully." });
+    res
+      .status(200)
+      .json({ success: true, message: "Password changed successfully." });
   } catch (error) {
     res.status(500).json({ message: "Error changing password", error });
   }
@@ -174,7 +176,9 @@ exports.requestPasswordReset = async (req, res) => {
     // Send the reset link via email
     sendPasswordResetEmail(email, resetToken);
 
-    res.status(200).json({ message: "Password reset link sent." });
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset link sent." });
   } catch (error) {
     res
       .status(500)

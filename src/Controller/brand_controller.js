@@ -3,7 +3,6 @@ const Brand = require("../Models/brand_model");
 exports.createBrand = async (req, res) => {
   try {
     const { brandName } = req.body;
-    console.log(req.file);
 
     const brandImage = req.file ? req.file.filename : "";
 
@@ -75,7 +74,7 @@ exports.updateBrandById = async (req, res) => {
     const { brandName } = req.body;
 
     // Find the brand with the given ID in the database
-    let brand = await Brand.findById(brandId);
+    const brand = await Brand.findById(brandId);
 
     if (!brand) {
       return res.status(404).json({
@@ -88,6 +87,12 @@ exports.updateBrandById = async (req, res) => {
     // Update the brand properties based on the request data
     brand.brandName = brandName;
 
+    if (req.file) {
+      brand.brandImage = req.file.filename;
+    } else {
+      brand.brandImage = brand.brandImage;
+    }
+
     // Save the updated brand to the database
     const updatedBrand = await brand.save();
 
@@ -98,7 +103,9 @@ exports.updateBrandById = async (req, res) => {
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error updating brand.", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating brand.", error });
   }
 };
 

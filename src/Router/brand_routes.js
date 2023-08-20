@@ -17,7 +17,11 @@ router.use(function (req, res, next) {
 router.get("/api/brands", controller.getAllBrands);
 router.get("/api/brands/:id", controller.getBrandById);
 router.post("/api/brands", multerUpload("brandImage"), controller.createBrand);
-router.put("/api/brands/:id", controller.updateBrandById);
+router.put(
+  "/api/brands/:id",
+  multerUpload("brandImage"),
+  controller.updateBrandById
+);
 router.delete("/api/brands/:id", controller.deleteBrandById);
 
 module.exports = router;

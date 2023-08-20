@@ -26,6 +26,8 @@ const productroutes = require("./src/Router/product_routes");
 const cartroutes = require("./src/Router/cart_routes");
 const addressroutes = require("./src/Router/address_routes");
 const orderroutes = require("./src/Router/order_routes");
+const contactroutes = require("./src/Router/contact_routes");
+const carouselroutes = require("./src/Router/carousel_routes");
 
 //this is to show image
 app.use("/", express.static("Images"));
@@ -39,6 +41,8 @@ app.use(productroutes);
 app.use(cartroutes);
 app.use(addressroutes);
 app.use(orderroutes);
+app.use(contactroutes);
+app.use(carouselroutes);
 
 ///Routes
 const { connectDB } = require("./src/Database/conn");

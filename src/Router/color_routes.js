@@ -14,7 +14,7 @@ router.use(function (req, res, next) {
 
 // Define the routes for CRUD operations on colors
 router.get("/api/colors", controller.getAllColors);
-router.get("/api/colors/:id", controller.deleteColorById);
+router.delete("/api/colors/:id", controller.deleteColorById);
 router.post("/api/colors", controller.createColor);
 router.put("/api/colors/:id", controller.updateColorById);
 
