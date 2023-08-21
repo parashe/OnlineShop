@@ -534,7 +534,7 @@ export const ResetPassword = async (
     // Handle errors here
     throw new Error(
       error.response?.data?.message ||
-        "An error occurred while reseting  the password."
+        "An error occurred while changing the password."
     );
   }
 };

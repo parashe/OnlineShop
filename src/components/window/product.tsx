@@ -66,7 +66,7 @@ export const Products = () => {
           <div className="grid grid-cols-1 md:mt-5 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-2">
             {filterWithoutDiscountProduct &&
               filterWithoutDiscountProduct
-                .slice(0, 10)
+                .slice(-10)
                 .map((product: any, index: number) => (
                   <Link
                     href={{

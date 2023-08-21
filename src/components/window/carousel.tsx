@@ -16,10 +16,8 @@ const Carousels = () => {
       carouselData && carouselData.data && carouselData.data.carousels
         ? carouselData.data.carousels
         : [],
-    [carouselData.data?.carousels]
+    [carouselData?.data?.carousels]
   );
-  console.log("carouselData", carouselData);
-  console.log("allcarouselData", allcarouselData);
 
   return (
     <Carousel

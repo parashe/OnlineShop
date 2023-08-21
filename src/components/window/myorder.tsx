@@ -51,9 +51,13 @@ export const MyOrders = () => {
   } else if (orders.error || !allorders) {
     // Show an error message if there was a network error or if data is not available
     windowContent = (
-      <div className="container">
-        <div className="flex w-full justify-center">
-          <p className="text-ui-red">Network Error or Data not available</p>
+      <div className="container mx-auto">
+        <div className=" mt-12 py-32 text-center">
+          <Alert
+            type="error"
+            message="You don't have any items in your cart"
+            onClose={handleAlertClose}
+          />
         </div>
       </div>
     );

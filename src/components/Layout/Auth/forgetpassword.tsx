@@ -34,10 +34,7 @@ const ForgetPassword = ({ onClose }: ResetPasswordProps) => {
     } catch (error: any) {
       setIsAlertVisible(true);
       setAlertType("error");
-      setAlertMessage(
-        error.response?.data?.message ||
-          "An error occurred while sending the reset email."
-      );
+      setAlertMessage(error.message);
     } finally {
       setIsResetting(false);
     }

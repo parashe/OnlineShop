@@ -8,9 +8,9 @@ const ProductImage = ({ imageUrl }: { imageUrl: string | undefined }) => (
   <div>
     <a href="#">
       <Image
-        style={{ objectFit: "fill", cursor: "pointer", height: 300 }}
-        width={300}
-        height={300}
+        style={{ objectFit: "contain", cursor: "pointer", height: 300 }}
+        width={500}
+        height={500}
         className="h-full w-full  object-center lg:h-full lg:w-full cursor-pointer p-2"
         src={Image_Url + imageUrl}
         alt="product image"

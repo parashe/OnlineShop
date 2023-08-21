@@ -4,7 +4,7 @@ import { Spinner } from "@/components/Layout/Atom/atom";
 import { Breadcrumb } from "@/components/Layout/BreadCrumb/breadcrumb";
 import Navbar from "@/components/Layout/Navbar/Navbar";
 import Footer from "@/components/window/footer";
-import OfferProducts from "@/components/window/offerproduct";
+
 import ShoppingCart from "@/components/window/shoppingcart";
 
 const Home = () => {
@@ -32,7 +32,7 @@ const Home = () => {
           <Navbar />
           <Breadcrumb title="Shopping Cart" />
           <ShoppingCart />
-          <OfferProducts />
+
           <Footer />
         </>
       )}

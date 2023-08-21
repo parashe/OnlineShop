@@ -29,7 +29,7 @@ const Home = () => {
           <Spinner size={16} color="text-light-200" />
         </div>
       ) : (
-        // Once isLoading is false, render the actual content
+   
         <>
           <Navbar />
           <Breadcrumb title="About" />

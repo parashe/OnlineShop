@@ -21,13 +21,11 @@ export const AllProduct = () => {
   const categoryId = router.query.id;
   const brandId = router.query.brandId;
 
-  console.log("brandId", brandId);
-
   // State variables using useState hook
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("featured");
-  const itemsPerPage = 12;
+  const itemsPerPage = 24;
   const [categoryData, setCategoryData] = useState<Categories | null>(null);
   const [brand, setBrandData] = useState<Brand | null>(null);
 
