@@ -85,7 +85,7 @@ const Product = () => {
               ?.categoryName
           }
         </td>
-        <td className="px-6 py-4">${item.price}</td>
+        <td className="px-6 py-4">£{item.price}</td>
         <td className="px-6 py-4">{item.stockQuantity}</td>
 
         <td className="px-6 py-4">

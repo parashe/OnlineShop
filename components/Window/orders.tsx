@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UseOrder } from "resources/resources";
-import { Spinner } from "../Layout/Atom/atom";
+import { Alert, Spinner } from "../Layout/Atom/atom";
 import OrderLayout from "../Layout/Order/order";
 
 export const Orders = () => {
@@ -22,12 +22,20 @@ export const Orders = () => {
         <Spinner size={16} color="text-light-200" />
       </div>
     );
+  } else if (allorders?.length === 0) {
+    windowContent = (
+      <div className="container">
+        <div className=" w-full justify-center text-center py-20 px-20">
+          <Alert type="error" message="You dont have any orders" />
+        </div>
+      </div>
+    );
   } else if (orders.error || !allorders) {
     // Show an error message if there was a network error or if data is not available
     windowContent = (
       <div className="container">
-        <div className="flex w-full justify-center">
-          <p className="text-ui-red">Network Error or Data not available</p>
+        <div className=" w-full justify-center text-center py-20 px-20">
+          <Alert type="error" message="You dont have any orders" />
         </div>
       </div>
     );

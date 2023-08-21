@@ -116,4 +116,9 @@ export type Contact = {
   email: string;
   message: string;
   createdAt: string;
+  contacts: Contact[];
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  phone: string;
 };

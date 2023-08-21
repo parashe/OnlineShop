@@ -153,9 +153,9 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link
-                  href="/size"
+                  href="/message"
                   className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
-                    router.pathname === "/size" ? "bg-gray-100" : ""
+                    router.pathname === "/message" ? "bg-gray-100" : ""
                   }`}
                 >
                   <svg
