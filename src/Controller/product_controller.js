@@ -93,9 +93,9 @@ exports.createProduct = async (req, res) => {
     if (createdBy) {
       product.createdBy = createdBy;
     }
-    if (price) {
-      product.price = product.price - (discountPrice / 100) * product.price;
-    }
+    // if (price) {
+    //   product.price = product.price - (discountPrice / 100) * product.price;
+    // }
     // Check if discountPrice is provided and assign it to the product
     if (discountPrice) {
       product.discountPrice = discountPrice;
@@ -294,14 +294,14 @@ exports.updateProduct = async (req, res) => {
     const productId = req.params.id;
 
     // Check if the required fields are present in the request body
-    if (!productName || !category || !price || !stockQuantity) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Product name, category, price, and stock quantity are required.",
-        status: 400,
-      });
-    }
+    // if (!productName || !category || !price || !stockQuantity) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message:
+    //       "Product name, category, price, and stock quantity are required.",
+    //     status: 400,
+    //   });
+    // }
 
     // Initialize the productUploadedImage array
     const productUploadedImage = [];
@@ -313,7 +313,7 @@ exports.updateProduct = async (req, res) => {
       }
     } else {
       for (let i = 0; i < req.files.length; i++) {
-        productUploadedImage.push(req.files[i].path);
+        productUploadedImage.push(req.files[i].filename);
       }
     }
 
