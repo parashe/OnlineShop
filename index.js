@@ -1,5 +1,5 @@
 const express = require("express");
-import serverless from "serverless-http";
+
 const cors = require("cors");
 const app = express();
 
@@ -52,10 +52,8 @@ app.get("/", (req, res) => {
   res.send("Hello, Express!");
 });
 
-// const port = process.env.port || 8000;
-// // Start the server
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
-
-module.exports.handler = serverless(app);
+const port = process.env.port || 8000;
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
