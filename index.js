@@ -14,7 +14,7 @@ app.use(
   })
 );
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 // routers
 const authRoutes = require("./src/Router/auth_routes");
