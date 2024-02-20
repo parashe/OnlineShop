@@ -2,7 +2,7 @@ const express = require("express");
 
 const cors = require("cors");
 
-app.use(cors({ origin: '*' }));
+
 const app = express();
 
 //middleware to show json
@@ -16,7 +16,7 @@ app.use(
   })
 );
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 // routers
 const authRoutes = require("./src/Router/auth_routes");
