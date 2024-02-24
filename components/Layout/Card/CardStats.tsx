@@ -26,7 +26,7 @@ export default function CardStats({
   return (
     <>
       <div className="mt-10">
-        <div className="relative flex min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
+        <div className="relative flex min-w-0 break-words  bg-white rounded mb-6 xl:mb-0 shadow-md">
           <div className="flex-auto p-4">
             <div className="flex ">
               <div className="relative w-full pr-4 max-w-full flex-grow flex-1">

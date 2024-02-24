@@ -81,7 +81,7 @@ const BrandSection = () => {
     // Show a spinner if data is still loading
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+        <Spinner size={20} color="text-light-200" />
       </div>
     );
   } else if (brandData.error || !allbrandData) {
@@ -96,7 +96,7 @@ const BrandSection = () => {
   } else {
     // Show the user data table if data is available
     windowContent = (
-      <section className="py-12 container mx-auto">
+      <section className=" container mx-auto">
         <div className="px-4 md:px-10 mx-auto">
           <div className="mb-8">
             {/* Breadcrumb component */}
@@ -105,7 +105,7 @@ const BrandSection = () => {
           <div>
             <div className="flex justify-end mb-4">
               {/* Button to trigger the user creation modal */}
-              <Button onClick={toggleModal}>Create New Brand</Button>
+              <Button onClick={toggleModal}>Add New</Button>
             </div>
             <div className="text-center w-full">
               <Table

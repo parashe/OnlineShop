@@ -29,7 +29,7 @@ const Category = () => {
   if (isLoading) {
     return (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-100 bg-opacity-40 z-[100]">
-        <Spinner size={12} color="text-light-200" />
+        <Spinner size={20} color="text-light-200" />
       </div>
     );
   }
@@ -85,7 +85,7 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
   };
   const renderCategory = (category: Category) => (
     <>
-      <div key={category._id} className="my-4 ">
+      <div key={category._id} className="py-2">
         <label className="flex items-center">
           {category.parentCategory && (
             <ArrowRight className="w-2.5 h-2.5 ml-10" fg="red" />
@@ -129,13 +129,13 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
   );
 
   return (
-    <section className="py-12 container mx-auto bg-white m-5">
+    <section className=" container mx-auto bg-white ">
       <div className="px-4 md:px-10 mx-auto">
-        <div className="mb-8">
+        <div className="">
           <Breadcrumb title="Category" />
         </div>
         <div className="flex justify-end mb-4">
-          <Button onClick={toggleModal}>Create New Category</Button>
+          <Button onClick={toggleModal}>Add New</Button>
         </div>
         <div>
           <h1 className="text-lg font-bold text-gray-800 spacing-2 tracking-wide">
@@ -174,7 +174,6 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
   );
 };
 
-
 const organizeCategories = (categories: Category[]): Category[] => {
   const categoriesMap: Record<string, Category> = {};
   const rootCategories: Category[] = [];
@@ -189,10 +188,10 @@ const organizeCategories = (categories: Category[]): Category[] => {
       rootCategories.push(categoriesMap[category._id]);
     } else {
       const parent = categoriesMap[category.parentCategory];
-      if (parent.categories === null) {
+      if (parent?.categories === null) {
         parent.categories = [];
       }
-      parent.categories.push(categoriesMap[category._id]);
+      parent?.categories.push(categoriesMap[category._id]);
       categoriesMap[category._id].parent = parent;
     }
   });

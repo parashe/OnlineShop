@@ -12,6 +12,6 @@ module.exports = {
     defaultLocale: "en-US",
   },
   images: {
-    domains: ["localhost"], // Add other domains if needed
+    domains: ["localhost", "onlineshop-zp2h.onrender.com"], // Add other domains if needed
   },
 };

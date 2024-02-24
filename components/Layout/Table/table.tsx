@@ -50,7 +50,7 @@ const Table: React.FC<TableProps> = ({
   console.log("pagination", paginatedData);
 
   return (
-    <div className=" container w-full  md:w-full relative overflow-x-auto shadow-md sm:rounded-lg bg-white rounded-md border border-gray-200 p-4 ">
+    <div className=" container w-full  md:w-full border border-gray-100 relative overflow-x-auto shadow-sm sm:rounded-lg bg-white rounded-sm   p-4 ">
       <div className="flex justify-between">
         <div>
           <p className="text-lg font-semibold text-gray-800 spacing-2 tracking-wide">
@@ -70,7 +70,7 @@ const Table: React.FC<TableProps> = ({
         )}
       </div>
       <table className="w-full md:w-[1300px] text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-white bg-blue-500 dark:bg-gray-700">
+        <thead className="text-xs text-white bg-ui-red dark:bg-gray-700">
           <tr>
             {headers.map((header, index) => (
               <th key={index} scope="col" className="px-6 py-3 font-semibold">

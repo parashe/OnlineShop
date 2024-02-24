@@ -67,7 +67,7 @@ const ColorSection = () => {
   if (colorData.isLoading) {
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+         <Spinner size={20} color="text-light-200" />
       </div>
     );
   } else if (colorData.error || !allColorData) {
@@ -80,14 +80,14 @@ const ColorSection = () => {
     );
   } else {
     windowContent = (
-      <section className="py-12 container mx-auto">
+      <section className=" container mx-auto">
         <div className="px-4 md:px-10 mx-auto">
           <div className="mb-8">
             <Breadcrumb title="Colors" className="font-bold" />
           </div>
           <div>
             <div className="flex justify-end mb-4">
-              <Button onClick={toggleModal}>Create New Color</Button>
+              <Button onClick={toggleModal}>Add New</Button>
             </div>
             <div className="text-center w-full">
               <Table

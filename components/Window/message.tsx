@@ -15,7 +15,7 @@ export const Message = () => {
   if (messageData.isLoading) {
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+        <Spinner size={20} color="text-light-200" />
       </div>
     );
   } else if (messageData.error || !allMessageData) {

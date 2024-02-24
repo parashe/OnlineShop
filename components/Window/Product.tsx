@@ -161,7 +161,7 @@ const Product = () => {
     // Show a spinner if data is still loading
     windowContent = (
       <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-dark-000 bg-opacity-40 z-[100]">
-        <Spinner size={8} color="text-light-200" />
+        <Spinner size={20} color="text-light-200" />
       </div>
     );
   } else if (productData.error || !allproductData) {
@@ -176,7 +176,7 @@ const Product = () => {
   } else {
     // Show the user data table if data is available
     windowContent = (
-      <section className="py-12 container mx-auto">
+      <section className=" container mx-auto">
         <div className="px-4 md:px-10 mx-auto">
           <div className="mb-8">
             {/* Breadcrumb component */}
@@ -185,7 +185,9 @@ const Product = () => {
           <div>
             <div className="flex justify-end mb-4">
               {/* Button to trigger the user creation modal */}
-              <Button onClick={toggleModal}>Create New Product</Button>
+              <Button className="bg-blue-500" onClick={toggleModal}>
+                Add New
+              </Button>
             </div>
             <div className="text-center w-full">
               <Table
@@ -529,7 +531,7 @@ const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
   };
 
   return (
-    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:w-[1300px] w-full h-full overflow-y-auto ">
+    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 md:max-w-[1300px] w-full h-full overflow-y-auto ">
       <div className="flex items-start justify-between bg-gray-100 p-4 border-b rounded-t dark:border-gray-600">
         <h3 className="px-10 text-xl font-semibold text-gray-900 dark:text-white">
           Create New Category
@@ -715,7 +717,7 @@ const ProductModalDetails = ({ toggleModal }: ProductModalDetailsProps) => {
                 onClick={() => {
                   handleSaveProduct();
                 }}
-                className="px-12 py-3 rounded-sm bg-ui-blue text-white text-md space-x-0"
+                className="px-12 py-3 rounded-sm bg-ui-blue text-white text-md space-x-0 cursor:pointer"
               >
                 {isSaving ? (
                   <div className="flex justify-center">
@@ -774,6 +776,9 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
   const [imageError, setImageError] = useState("");
 
   const [selectedImage, setSelectedImage] = useState<File[]>([]);
+
+  console.log("selectedImage", selectedImage);
+
   const [selectedParentCategory, setSelectedParentCategory] = useState<{
     label: string;
     value: number | string;
@@ -913,7 +918,7 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
             });
           }
 
-          if (selectedSize.length > 0) {
+          if (selectedSize.length === 0) {
             selectedSize.forEach((size, index) => {
               formData.append("sizes", size.value.toString());
             });
@@ -931,11 +936,23 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
           formData.append("description", description);
           formData.append("productName", productName);
 
+          // Append existing images if any
+          // if (data.productImages && data.productImages.length > 0) {
+          //   data.productImages.forEach((image, index) => {
+          //     formData.append("productImages", image);
+          //   });
+          // }
+
+          // Append new images if any
           if (selectedImage.length > 0) {
             selectedImage.forEach((image, index) => {
               formData.append("productImages", image);
             });
           }
+
+          console.log("selectedImage", selectedImage);
+
+          console.log("formData", formData);
 
           const res = await updateProduct(data && data._id, formData);
 
@@ -946,7 +963,7 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
             setIsSaving(false);
             setIsAlertVisible(true);
             setAlertType("success");
-            setAlertMessage(" Product added successfully!");
+            setAlertMessage(" Product updated successfully!");
           }
         } catch (error: any) {
           setIsSaving(false);
@@ -1001,6 +1018,7 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
   //handling the change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageError("");
+    console.log("e.target.files", e.target.files);
     const files = e.target.files;
 
     if (files) {
@@ -1009,6 +1027,7 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
         fileList.push(files[i]);
       }
 
+      console.log("fileList", fileList);
       setSelectedImage(fileList);
     }
   };
@@ -1275,18 +1294,18 @@ const ProductEditModalDetails = ({ onClose, data }: ProducEditProps) => {
               </div>
 
               {/* Input File */}
-              <div className="w-full ">
-                <InputFile
-                  label="Product Image"
-                  required={true}
-                  placeholder="First selected image will display in the website"
-                  errorMessage={imageError}
-                  onChange={handleImageChange}
-                  onSelectItem={selectedImage?.map((image) => {
-                    return image.name;
-                  })}
-                />
-              </div>
+              {/* <div className="w-full ">
+              <InputFile
+                label="Product Image"
+                required={true}
+                placeholder="First selected image will display in the website"
+                errorMessage={imageError}
+                onChange={handleImageChange}
+                onSelectItem={selectedImage?.map((image) => {
+                  return image.name;
+                })}
+              />
+            </div> */}
 
               <div className="flex justify-end mt-5 pt-5">
                 {/* Button for form submission */}

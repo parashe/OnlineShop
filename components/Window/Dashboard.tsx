@@ -13,8 +13,6 @@ const DashboardSection = () => {
     [ordersData?.data]
   );
 
-  console.log("allOrdersData", allOrdersData);
-
   const totalAmount =
     allOrdersData &&
     allOrdersData.orders.reduce((acc: any, order) => {
@@ -35,7 +33,7 @@ const DashboardSection = () => {
   const totalUser = alluserData && alluserData.length;
 
   return (
-    <section className="py-12 ">
+    <section className="py-12 bg-white ">
       <div className="">
         <div className="px-4 md:px-10 mx-auto w-full">
           <div>
@@ -55,7 +53,7 @@ const DashboardSection = () => {
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="Total Amount of Money"
+                  statSubtitle="Total Amount "
                   statTitle={totalAmount}
                   statArrow="down"
                   statPercent="1.10"

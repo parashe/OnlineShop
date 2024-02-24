@@ -42,7 +42,8 @@ const OrderLayout: React.FC<OrderProps> = ({
   return (
     <>
       {/* headers */}
-      <div className="flex mt-5 mb-5 md:bg-ui-red md:py-5 md:px-5">
+      <div className="w-full bg-white  m-0 border shadow-sm">
+      <div className="flex  md:bg-ui-red md:py-5 md:px-5 ">
         <h3 className="font-semibold text-gray-600 md:text-white text-xs uppercase w-2/5">
           Product Details
         </h3>
@@ -159,6 +160,7 @@ const OrderLayout: React.FC<OrderProps> = ({
             </div>
           )}
         </div>
+      </div>
       </div>
     </>
   );

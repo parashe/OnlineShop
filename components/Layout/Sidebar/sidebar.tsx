@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [openSidebar, setOpenSidebar] = useState(true);
 
   const toggleDropdown = (dropdownId: string) => {
     setActiveDropdown((prev) => (prev === dropdownId ? null : dropdownId));
@@ -16,6 +17,9 @@ const Sidebar = () => {
 
   return (
     <>
+    
+        
+   
       <div>
         <button
           type="button"
@@ -23,6 +27,7 @@ const Sidebar = () => {
           data-hs-overlay="#docs-sidebar"
           aria-controls="docs-sidebar"
           aria-label="Toggle navigation"
+          onClick={() => setOpenSidebar(!openSidebar)}
         >
           <span className="sr-only">Toggle Navigation</span>
           <svg
@@ -38,12 +43,11 @@ const Sidebar = () => {
             />
           </svg>
         </button>
-
+        {
+      openSidebar && (
         <div
           id="docs-sidebar"
-          className="  hs-overlay hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 left-0 bottom-0 z-[60] w-1/6 bg-white border-r border-gray-200 pt-7 pb-10 overflow-y-auto scrollbar-y lg:block lg:translate-x-0 lg:right-auto lg:bottom-0 dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700"
-          // Support for Safari
-          // Adjust the z-index if needed
+          className="w-full   hs-overlay hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 left-0 bottom-0 z-[60] sm:w-1/4 lg:w-1/6 bg-white border-r border-gray-200 pt-7 pb-10 overflow-y-auto scrollbar-y md:block lg:block lg:translate-x-0 lg:right-auto lg:bottom-0 dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700"
         >
           <div className="px-6">
             <Link
@@ -73,7 +77,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="/dashboard"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -100,7 +104,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="product"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/product" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -118,7 +122,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="category"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/category" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -136,7 +140,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="orders"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/orders" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -154,7 +158,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="/message"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/message" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -174,7 +178,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="brand"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/brand" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -192,7 +196,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="/size"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/size" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -210,7 +214,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="/color"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/color" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -229,7 +233,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="carousel"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/carousel" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -247,7 +251,7 @@ const Sidebar = () => {
               <li>
                 <Link
                   href="user"
-                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
+                  className={`flex items-center gap-x-3.5 py-2 px-2.5 dark:active:bg-white/10 text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white ${
                     router.pathname === "/user" ? "bg-gray-100" : ""
                   }`}
                 >
@@ -267,7 +271,7 @@ const Sidebar = () => {
 
               <li className="hs-accordion" id="users-accordion">
                 <Link
-                  className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+                  className="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-xs text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                   href="#"
                   onClick={() => toggleDropdown("users-accordion")}
                 >
@@ -544,7 +548,10 @@ const Sidebar = () => {
             </ul>
           </nav>
         </div>
+         )
+        }
       </div>
+        
     </>
   );
 };
