@@ -5,10 +5,7 @@ import Products from "../components/Window/Product";
 const Product = () => {
   return (
     <Layout>
-  
-        
-          <Products />
-        
+      <Products />
     </Layout>
   );
 };

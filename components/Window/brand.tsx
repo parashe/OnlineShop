@@ -51,20 +51,20 @@ const BrandSection = () => {
 
         <td className="px-6 py-4">
           <Button
-            className="px-2 py-2 rounded-sm bg-yellow-500 text-white"
+            className="px-3 py-3 rounded-full bg-yellow-500 text-white"
             onClick={() => handleEditModal(item)}
           >
             <span className="flex">
               {" "}
-              <Pencil fg="white" className="mt-1 mr-1"></Pencil> Edit
+              <Pencil fg="white" className=" h-3 w-3"></Pencil> 
             </span>
           </Button>
           <Button
-            className="px-2 py-2 rounded-sm bg-ui-red text-white"
+            className="px-3 py-3 rounded-full bg-ui-red text-white"
             onClick={() => setIsDeleteModal(true)}
           >
             <span className="flex">
-              <Trash fg="white" className="mt-1 mr-1"></Trash> Delete
+              <Trash fg="white" className=" h-3 w-3"></Trash> 
             </span>
           </Button>
         </td>
@@ -98,14 +98,14 @@ const BrandSection = () => {
     windowContent = (
       <section className=" container mx-auto">
         <div className="px-4 md:px-10 mx-auto">
-          <div className="mb-8">
+          <div className="mb-3">
             {/* Breadcrumb component */}
             <Breadcrumb title="Brands" className="font-bold" />
           </div>
           <div>
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-end mb-2">
               {/* Button to trigger the user creation modal */}
-              <Button onClick={toggleModal}>Add New</Button>
+              <Button onClick={toggleModal} className="bg-ui-create-button rounded-sm text-xs py-2 ">Add New</Button>
             </div>
             <div className="text-center w-full">
               <Table

@@ -140,7 +140,7 @@ const User = () => {
   } else {
     // Show the user data table if data is available
     windowContent = (
-      <section className="py-12 container mx-auto">
+      <section className=" container mx-auto">
         <div className="px-4 md:px-10 mx-auto">
           <div className="mb-8">
             {/* Breadcrumb component */}
@@ -149,7 +149,7 @@ const User = () => {
           <div>
             <div className="flex justify-end mb-4">
               {/* Button to trigger the user creation modal */}
-              <Button onClick={toggleModal}>Create New User</Button>
+              <Button onClick={toggleModal}>Add New</Button>
             </div>
             <div className="text-center w-full">
               {/* User data table */}

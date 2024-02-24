@@ -63,5 +63,7 @@ module.exports = {
 
     "ui-yellow-400": "#facc15",
     "ui-yellow-500": "#eab308",
+
+    "ui-create-button": "#0C2D57",
   },
 };

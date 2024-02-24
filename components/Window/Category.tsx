@@ -135,7 +135,7 @@ const CategoryDetails = ({ data }: CategoryDetailsProps) => {
           <Breadcrumb title="Category" />
         </div>
         <div className="flex justify-end mb-4">
-          <Button onClick={toggleModal}>Add New</Button>
+          <Button onClick={toggleModal}   className="bg-ui-create-button rounded-sm text-xs py-2 ">Add New</Button>
         </div>
         <div>
           <h1 className="text-lg font-bold text-gray-800 spacing-2 tracking-wide">

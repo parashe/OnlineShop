@@ -46,7 +46,7 @@ export const Orders = () => {
         <div className="flex flex-col md:flex-row">
           <div className=" sm:w-full w-full md:w-full px-8  mr-0 md:my-10    bg-white">
             <div className=" justify-between border-b-2 border-gray-100 md:pb-8 pb-3 ">
-              <h1 className="font-semibold text-2xl">Orders Recieved</h1>
+              <h1 className="font-black text-sm">Orders Recieved</h1>
             </div>
 
             {allorders?.map((item, index) => (

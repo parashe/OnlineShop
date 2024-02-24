@@ -32,7 +32,7 @@ const UserPage = () => {
   return (
     <Layout>
       <div className="flex">
-        <div className=" mt-10 w-full xl:w-8/12 mb-12 xl:mb-0 px-4 flex-grow">
+        <div className="  w-full xl:w-8/12 mb-12 xl:mb-0 px-4 flex-grow">
           <User />
         </div>
       </div>

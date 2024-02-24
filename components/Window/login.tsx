@@ -98,7 +98,11 @@ const LoginPage: React.FC = () => {
           if (role === "admin") {
             router.push("/dashboard"); // Redirect to the dashboard for admin users
           } else if (role === "user") {
-            router.push("/profile"); // Redirect to the profile page for regular users
+            setAlertType("error");
+            setIsAlertVisible(true);
+            setAlertMessage("You are not authorized to access this page.");
+            setIsSaving(false);
+            
           }
         }
       } catch (error) {
@@ -121,7 +125,7 @@ const LoginPage: React.FC = () => {
         router.push("/dashboard");
       }
     } else {
-      setLoading(false); // Authentication check is done
+      setLoading(false);
     }
   }, [router]);
 
@@ -163,7 +167,7 @@ const LoginPage: React.FC = () => {
 
           <div className="pt-0 px-6 pb-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-center">
-              <h1 className="text-[18px] justify-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              <h1 className="text-lg font-black justify-center leading-relaxed tracking-tight text-gray-800">
                 Sign In To Continue
               </h1>
             </div>
@@ -243,15 +247,7 @@ const LoginPage: React.FC = () => {
                   </span>
                 )}
               </Button>
-              <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
-                Don’t have an account yet?{" "}
-                <a
-                  href="#"
-                  className="font-medium text-ui-red hover:underline dark:text-primary-500"
-                >
-                  Sign up
-                </a>
-              </p>
+
             </form>
           </div>
         </div>

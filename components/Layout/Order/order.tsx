@@ -83,17 +83,17 @@ const OrderLayout: React.FC<OrderProps> = ({
 
               {/* Product info */}
               <div className="flex flex-col justify-center ml-4 flex-grow">
-                <span className="font-bold text-sm ">{item.productName}</span>
+                <span className="font-black text-xs ">{item.productName}</span>
               </div>
             </div>
             <div className="text-center w-1/3 font-semibold text-sm">
-              <span className="font-bold text-sm ">{item.quantity}</span>
+              <span className="font-black text-xs ">{item.quantity}</span>
             </div>
             <div className="text-center w-1/3 font-semibold text-sm">
-              <span className="font-bold text-sm ">{item.size}</span>
+              <span className="font-black text-xs ">{item.size}</span>
             </div>
             <div className="text-center w-1/3 font-semibold text-sm">
-              <span className="font-bold text-sm ">{item.color}</span>
+              <span className="font-black text-xs ">{item.color}</span>
             </div>
 
             <span className="text-center w-1/4 font-semibold text-sm">
@@ -103,7 +103,7 @@ const OrderLayout: React.FC<OrderProps> = ({
         ))}
         {orderStatus && (
           <div className="md:mt-10 mt-4">
-            <h3 className="text-lg font-semibold mb-2">Order Status:</h3>
+            <h3 className="font-black text-xs mb-2">Order Status:</h3>
             <div className="flex space-x-2">
               {orderStatus.map(
                 (item, index) =>
@@ -132,8 +132,8 @@ const OrderLayout: React.FC<OrderProps> = ({
           {/* Address section */}
           {addressfromItems && addressfromItems.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-2">Address:</h3>
-              <div className="flex space-x-2">
+              <h3 className="font-black text-xs mb-2">Address:</h3>
+              <div className="flex space-x-2 text-xs">
                 {addressfromItems.map((item, index) => (
                   <div key={item._id}>
                     <p>City: {item.city}</p>
@@ -148,8 +148,8 @@ const OrderLayout: React.FC<OrderProps> = ({
           {/* User info section */}
           {userfromtheitems && userfromtheitems.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-2">UserInfo:</h3>
-              <div className="flex space-x-2">
+              <h3 className="font-black text-xs mb-2">UserInfo:</h3>
+              <div className="flex space-x-2 text-xs">
                 {userfromtheitems.map((item, index) => (
                   <div key={item._id}>
                     <p>Username: {item.fullName}</p>

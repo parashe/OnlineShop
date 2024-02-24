@@ -47,10 +47,9 @@ const Table: React.FC<TableProps> = ({
     startIndex,
     startIndex + itemsPerPage
   );
-  console.log("pagination", paginatedData);
 
   return (
-    <div className=" container w-full  md:w-full border border-gray-100 relative overflow-x-auto shadow-sm sm:rounded-lg bg-white rounded-sm   p-4 ">
+    <div className=" container w-full  md:w-full border border-gray-50 relative overflow-x-auto shadow-sm sm:rounded-lg bg-white   p-4 ">
       <div className="flex justify-between">
         <div>
           <p className="text-lg font-semibold text-gray-800 spacing-2 tracking-wide">

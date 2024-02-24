@@ -109,7 +109,7 @@ export const Input: React.FC<InputProps> = ({
   required,
 }) => {
   const defaultClassName =
-    "w-full px-4 py-3 rounded-sm shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500";
+    "w-full px-4 py-3 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500";
 
   const finalClassName = className
     ? defaultClassName + " " + className
