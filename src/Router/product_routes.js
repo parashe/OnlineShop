@@ -18,12 +18,12 @@ router.use(function (req, res, next) {
 
 // Use multerUpload middleware for handling file upload for productImages field (multiple images upload)
 router.post(
-  "/api/products",
+  "/.netlify/functions/app/api/products",
   multerUploadMultiple("productImages", 6),
   controller.createProduct
 );
 
-router.get("/api/products", controller.getAllProducts);
+router.get("/.netlify/functions/app/api/products", controller.getAllProducts);
 router.get("/api/productsdetails/:id", controller.getProductDetailsByID);
 router.get("/api/products/:id", controller.getProductById);
 router.delete("/api/products/:id", controller.deleteProductById);
