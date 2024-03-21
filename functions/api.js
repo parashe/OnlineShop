@@ -1,3 +1,8 @@
+const express = require("express");
+const serverless = require("serverless-http");
+app.use(express.json());
+const cors = require("cors");
+app.use(cors({ origin: '*' }));
 const authRoutes = require("../src/Router/auth_routes");
 const categoryroutes = require("../src/Router/category_routes");
 const sizeroutes = require("../src/Router/size_routes");
@@ -10,7 +15,7 @@ const orderroutes = require("../src/Router/order_routes");
 const contactroutes = require("../src/Router/contact_routes");
 const carouselroutes = require("../src/Router/carousel_routes");
 
-app.use("/", express.static("Images")); // Serve static images
+app.use("/.netlify/functions/api", express.static("Images")); // Serve static images
 app.use(authRoutes);
 app.use(categoryroutes);
 app.use(sizeroutes);
@@ -30,3 +35,4 @@ app.get(`/.netlify/functions/api`, (req, res) => {
 
 // Export app for Netlify handler
 module.exports = app;
+module.exports.handler = serverless(app);
