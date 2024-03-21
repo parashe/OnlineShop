@@ -1,5 +1,6 @@
 const express = require("express");
 const serverless = require("serverless-http");
+const app = express();
 app.use(express.json());
 const cors = require("cors");
 app.use(cors({ origin: '*' }));
@@ -29,7 +30,7 @@ app.use(contactroutes);
 app.use(carouselroutes);
 
 // Sample route to get started
-app.get(`/.netlify/functions/api`, (req, res) => {
+app.get(`/.netlify/functions/app`, (req, res) => {
   res.send("Hello, Express!");
 });
 
